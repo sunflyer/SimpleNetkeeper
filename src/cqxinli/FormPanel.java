@@ -1,5 +1,6 @@
 package cqxinli;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 
 import javax.swing.JLabel;
@@ -17,6 +18,7 @@ public class FormPanel extends JPanel{
 		this.labelname=labelName;
 		this.TFName=TextFieldName;
 		this.isEditable=isEditable;
+		this.setBackground(Color.WHITE);
 		this.setLayout(new GridLayout(1,2));
 		add();
 	}

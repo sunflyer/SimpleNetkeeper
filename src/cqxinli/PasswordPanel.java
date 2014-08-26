@@ -1,5 +1,6 @@
 package cqxinli;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 
 import javax.swing.JLabel;
@@ -16,6 +17,7 @@ public class PasswordPanel extends JPanel{
 	public PasswordPanel(String LabelName,boolean isEditable){
 		this.LabelName=LabelName;
 		this.isEditable=isEditable;
+		this.setBackground(Color.WHITE);
 		PanelPre();
 	}
 	

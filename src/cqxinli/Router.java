@@ -77,8 +77,8 @@ public class Router {
     					Tarhuc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
     				}   				
     				Tarhuc.setConnectTimeout(5000);
-    				Tarhuc.connect();
-    				
+    				DataFrame.showTips("处理登录信息和头内容完毕，开始请求操作");
+    				Tarhuc.connect();   				
     				InputStream is=Tarhuc.getInputStream();
     				int data=0;
     				StringBuffer sb=new StringBuffer();
@@ -87,6 +87,7 @@ public class Router {
     				}
     				String ResponseHTML=sb.toString();
     				System.out.println(ResponseHTML);
+    				DataFrame.showTips("正在处理操作结果");
     				//如果回复无权限
     				if(ResponseHTML.indexOf("You have no authority to access this device!")>=0){    					
     					return 3;
@@ -111,10 +112,17 @@ public class Router {
     } 
       
 	/**
+	 * <p>初始化路由器可连接情况。</p>
+	 * <p>Initial whether the router is available to be operated.</p>
+	 * <p>路由器的验证方式：输入用户名和密码以后，调用本地JS进行BASE64加密，加密内容为 Base64.Encode(用户名:密码)，然后设置COOKIE，刷新本地页面。<br>由于刷新时自动提交COOKIE，因此可以将
+	 * 验证任务放在客户端处理</p>
+	 * <p>The authorization method for router:after user input the user name and password,the login page use local JavaScript method to encrypt these info with Base64<br>and set cookie.The Content encrypted is Base64(username:password),and then refresh local page.<br>
+	 * Due to the cookie is uploaded automatically,the authorization can be simply processed by client</p>
 	 * @param urlStr: The remote address to configure.
 	 * @param authorizationStr: Username and password (for access network)
 	 */
 	private void runCgi(String urlStr, String authorizationStr) {    
+		DataFrame.showTips("正在验证路由器可用性");
         URL xUrl = null;    
         HttpURLConnection xHuc = null;    
         try {    
@@ -123,7 +131,7 @@ public class Router {
                 xHuc = (HttpURLConnection) xUrl.openConnection();    
                 if (xHuc != null) {    
                     if (!"".equals(authorizationStr)) {    
-                        //xHuc.setRequestProperty("Authorization", "Basic " + Base64.encode(authorizationStr));   
+                    	//设置路由器的COOKIE验证
                         xHuc.setRequestProperty("Cookie", "Authorization=Basic "+Base64.encode(authorizationStr));
                     }                         
                     xHuc.setRequestProperty("Content-Length", "0");    
@@ -136,7 +144,10 @@ public class Router {
                     while((chint=in.read())!=-1){  
                         sb.append((char)chint);  
                     }  
-                    String html=sb.toString();  
+                    String html=sb.toString(); 
+                    DataFrame.showTips("检查是否可用");
+                    //设置可用  如果检测到登陆成功后的框架代码
+                    //set it available if detected keyword that appear in the page which means login success.
                     if(html.indexOf("noframe")>0){
                     	this.isAuthed=true;                   	
                     }
