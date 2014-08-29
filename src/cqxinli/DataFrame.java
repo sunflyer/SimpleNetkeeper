@@ -16,6 +16,11 @@ import javax.swing.JPanel;
 public class DataFrame extends JFrame{
 	
 	private static JLabel Tips=new JLabel("准备就绪，请输入必要信息后，直接点击“设置”开始设置路由器");
+	private static FormPanel name=null;
+	private static PasswordPanel password=null;
+	private static FormPanel ip=null;
+	private static FormPanel adminName=null;
+	private static PasswordPanel adminPassword=null;
 	
 	public DataFrame(String name){
 		super(name);
@@ -23,7 +28,7 @@ public class DataFrame extends JFrame{
 	}
 	
 	private void NewFrame(){
-		int width=400,height=360;
+		int width=400,height=380;
 		this.setSize(width, height);
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension ss=tk.getScreenSize();
@@ -32,24 +37,25 @@ public class DataFrame extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		addPanel();
-		this.setVisible(true);
+		MainClass.setUserData(name, password, ip, adminName, adminPassword);
+		this.setVisible(true);		
 	}
 	
 	private void addPanel(){
 		this.setLayout(new GridLayout(10,1));
-		final FormPanel name=new FormPanel("输入您的用户名");
+		JLabel m_lab_accinfo=new JLabel("校园宽带账号信息");
+		add(m_lab_accinfo);
+		name=new FormPanel("输入您的用户名");
 		add(name);
-		FormPanel realname=new FormPanel("加密后的用户名","",false);
-		add(realname);
-		FormPanel encodedRealname=new FormPanel("URL编码后的用户名","",false);
-		add(encodedRealname);
-		final PasswordPanel password=new PasswordPanel("您的密码");
+		password=new PasswordPanel("您的密码");
 		add(password);
-		final FormPanel ip=new FormPanel("路由器IP地址(默认192.168.1.1)");
+		JLabel m_lab_routerinfo=new JLabel("路由器管理员信息，可在路由器机身下方标签找到");
+		add(m_lab_routerinfo);
+		ip=new FormPanel("路由器IP地址(默认192.168.1.1)");
 		add(ip);
-		final FormPanel adminName=new FormPanel("路由器管理员用户名","admin",true);
+		adminName=new FormPanel("路由器管理员用户名","admin",true);
 		add(adminName);
-		final PasswordPanel adminPassword=new PasswordPanel("路由器管理员密码");
+		adminPassword=new PasswordPanel("路由器管理员密码");
 		add(adminPassword);
 		//提示
 		JPanel jp2=new JPanel();
@@ -62,7 +68,8 @@ public class DataFrame extends JFrame{
 		//JButton dial=new JButton("本机连接");
 		//dial.addActionListener(new ClickDial(name,password));
 		JButton gen=new JButton("生成");
-		gen.addActionListener(new ClickGen(name,realname,encodedRealname));
+		RealUserFrame ruf=new RealUserFrame();
+		gen.addActionListener(new ClickGen(name,ruf));
 		JButton set=new JButton("设置路由器");
 		//用户名，密码，IP,路由器管理员名称，管理员密码
 		set.addActionListener(new ClickSet(name,password,ip,adminName,adminPassword));
@@ -86,8 +93,7 @@ public class DataFrame extends JFrame{
 		jp3.add(help);
 		this.add(jp3);
 		JLabel ver=new JLabel("版本"+MainClass.getVersionNoBuild()+" by CrazyChen@CQUT");
-		add(ver);
-		MainClass.setUserData(name, password, ip, adminName, adminPassword);
+		add(ver);		
 	}
 	
 	public static void showTips(String info){

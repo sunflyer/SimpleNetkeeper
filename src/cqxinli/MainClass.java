@@ -7,11 +7,11 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 
 public class MainClass {
-	private static String __g_ver_Build="201408262302";
-	private static int __g_ver_MainVer=1;
-	private static int __g_ver_SubVer=0;
-	private static int __g_ver_FixVer=15;
-	private static String __g_data_file_name="NetkeeperForRouter.ini";
+	public static final String __g_ver_Build="201408300013";
+	public static final int __g_ver_MainVer=1;
+	public static final int __g_ver_SubVer=0;
+	public static final int __g_ver_FixVer=16;
+	public static final String __g_data_file_name="NetkeeperForRouter.ini";
 	
 	public static String getVersion(){
 		return __g_ver_MainVer+"."+__g_ver_SubVer+"."+__g_ver_FixVer+"(Build"+__g_ver_Build+")";
