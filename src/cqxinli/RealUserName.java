@@ -3,17 +3,27 @@ package cqxinli;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 class RealUserFrame extends JFrame{
 	private FormPanel URLName=null;
 	private FormPanel EncodedName=null;
 	private String Username=null;
+	private JTextField gUrlArea=null;
+	private String gRouterIP=null;
+	private String gAccPassword=null;
+	private JButton gButCopy=null;
 	public RealUserFrame(String username){
 		super("编码用户名");
 		initFrame();
@@ -25,6 +35,27 @@ class RealUserFrame extends JFrame{
 		this(null);
 	}
 	
+	public void setUrlInfo(String ip,String password){
+		this.gRouterIP=ip;
+		this.gAccPassword=password;
+		if(this.NotEmpty(this.gRouterIP) && this.NotEmpty(this.gAccPassword) && this.NotEmpty(this.URLName.getValue())){
+			this.gUrlArea.setText("http://"+gRouterIP+"/userRpm/PPPoECfgRpm.htm?wan=0&wantype=2&acc="+URLName.getValue()+"&psw="+gAccPassword+"&confirm="+gAccPassword
+	    				+"sta_ip=0.0.0.0&sta_mask=0.0.0.0&linktype=2&Connect=%C1%AC+%BD%D3");
+			this.gButCopy.setEnabled(true);
+		}		
+		else{
+			this.gUrlArea.setText("");
+			this.gButCopy.setEnabled(false);
+		}
+			
+	}
+	
+	private boolean NotEmpty(String x){
+		if (x==null) return false;
+		return !x.equals("");
+	}
+
+	
 	private void initFrame(){
 		JLabel tips=new JLabel("生成的用户名");
 		this.URLName=new FormPanel("URL编码后的用户名","",false);
@@ -33,8 +64,27 @@ class RealUserFrame extends JFrame{
 		this.add(this.URLName);
 		this.add(EncodedName);
 		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
-		this.setSize(320, 120);
-		this.setLayout(new GridLayout(3,1));
+		JLabel mTipsURL=new JLabel("生成的设定地址");
+		add(mTipsURL);
+		gUrlArea=new JTextField();
+		gUrlArea.setEditable(false);
+		add(gUrlArea);
+		gButCopy=new JButton("复制地址到剪切板");
+		gButCopy.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+					Toolkit mToolkit=Toolkit.getDefaultToolkit();
+					StringSelection mUrlData=new StringSelection(gUrlArea.getText());
+					mToolkit.getSystemClipboard().setContents(mUrlData, mUrlData);
+					JOptionPane.showMessageDialog(null, "已将地址复制到剪切板");
+			}
+			
+		});
+		add(gButCopy);
+		this.setSize(320, 220);
+		this.setLayout(new GridLayout(6,1));
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension di=tk.getScreenSize();
 		this.setLocation(di.width/2-160,di.height/2-60);

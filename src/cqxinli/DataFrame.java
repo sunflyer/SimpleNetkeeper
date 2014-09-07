@@ -69,14 +69,14 @@ public class DataFrame extends JFrame{
 		//dial.addActionListener(new ClickDial(name,password));
 		JButton gen=new JButton("生成");
 		RealUserFrame ruf=new RealUserFrame();
-		gen.addActionListener(new ClickGen(name,ruf));
+		gen.addActionListener(new ClickGen(name,ruf,password,ip));
 		JButton set=new JButton("设置路由器");
 		//用户名，密码，IP,路由器管理员名称，管理员密码
 		set.addActionListener(new ClickSet(name,password,ip,adminName,adminPassword));
 		JButton def=new JButton("默认");
 		def.addActionListener(new ClickDefault(ip,adminName,adminPassword));
 		JButton help=new JButton("帮助");
-		help.addActionListener(new ClickHelp());
+		help.addActionListener(new ClickHelp(ip,adminName,adminPassword));
 		JButton save = new JButton("保存");
 		save.addActionListener(new ActionListener(){
 			@Override

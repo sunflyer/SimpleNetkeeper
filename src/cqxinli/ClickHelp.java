@@ -6,11 +6,22 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 public class ClickHelp implements ActionListener{
 
+	protected FormPanel ip;
+	protected FormPanel admin;
+	protected PasswordPanel pwd;
+	
+	public ClickHelp(FormPanel ip,FormPanel admin,PasswordPanel pwd){
+		this.ip=ip;
+		this.admin=admin;
+		this.pwd=pwd;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		new HelpFrame("帮助");		
@@ -55,8 +66,11 @@ public class ClickHelp implements ActionListener{
 			sb.append("警告：本软件关于账号加密的全部内容均来自互联网，仅作学习交流之用，本人并不从事任何反向工程。由此软件引发的任何后果由使用者本人承担，制作者概不负责。");
 			sb.append("本软件作为免费软件，不得销售此软件以及此软件的修改或/和衍生版本，否则追究责任。");
 			jta.setText(sb.toString());
-			add(jta);
-			this.setSize(500, 550);
+			add(jta,BorderLayout.NORTH);
+			JButton debug=new JButton("Debug");
+			debug.addActionListener(new ClickDebug(ip,admin,pwd));
+			add(debug,BorderLayout.SOUTH);
+			this.setSize(650, 550);
 			this.setVisible(true);
 		}
 	}

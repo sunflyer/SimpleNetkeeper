@@ -40,7 +40,7 @@ public class Router {
      * - 0 if configuration success.<br>
      * - 1 if IP address is not valid<br>
      * - 3 if the router returns that no authority to access this device.(Always caused by the ROM rejected the access even though your name and password is right)<br>
-     * - 4 if InputStream processing error (IOException Occured)<br>
+     * - 4 if InputStream processing error (IOException Occurred)<br>
      * - 9 if the application detected another login request to complete this operation, or some routers limited this functions that permision denied.<br>
      * - 10 if error Unknown
      */
@@ -148,7 +148,7 @@ public class Router {
                     DataFrame.showTips("检查是否可用");
                     //设置可用  如果检测到登陆成功后的框架代码
                     //set it available if detected keyword that appear in the page which means login success.
-                    if(html.indexOf("noframe")>0){
+                    if(html.indexOf("noframe")>0 || html.indexOf("frame")>=0){
                     	this.isAuthed=true;                   	
                     }
                     //DEBUG用，输出调试数据
