@@ -34,6 +34,7 @@ public class ClickSet implements ActionListener{
 			case 1:DataFrame.showTips("给定的路由器地址不合法。");break;
 			case 3:DataFrame.showTips("尝试操作时发生错误，没有足够的权限");break;
 			case 4:DataFrame.showTips("IOException Occured");break;
+			case 6:DataFrame.showTips("找不到合适的验证方式，请求操作出现错误。");break;
 			case 9:DataFrame.showTips("检测到额外的不可替代的登陆操作，或者权限不足");break;
 			default:DataFrame.showTips("Unknown Error");
 			}	

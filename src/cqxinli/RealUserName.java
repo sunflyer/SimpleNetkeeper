@@ -44,7 +44,7 @@ class RealUserFrame extends JFrame{
 			this.gButCopy.setEnabled(true);
 		}		
 		else{
-			this.gUrlArea.setText("");
+			this.gUrlArea.setText("输入路由器IP地址以及宽带账号信息后才可以生成。");
 			this.gButCopy.setEnabled(false);
 		}
 			
@@ -87,7 +87,7 @@ class RealUserFrame extends JFrame{
 		this.setLayout(new GridLayout(6,1));
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension di=tk.getScreenSize();
-		this.setLocation(di.width/2-160,di.height/2-60);
+		this.setLocation(200,di.height/2-110);
 		this.setResizable(false);
 	}
 	

@@ -7,13 +7,18 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 
 public class MainClass {
-	public static final String __g_ver_Build="201409072247";
+	public static final String __g_ver_Build="201409081449";
 	public static final int __g_ver_MainVer=1;
 	public static final int __g_ver_SubVer=0;
-	public static final int __g_ver_FixVer=18;
+	public static final int __g_ver_FixVer=19;
 	public static final String __g_data_file_name="NetkeeperForRouter.ini";
+	
+	public static final int VER_REL=0;
+	public static final int VER_DEBUG=1;
+	public static final int VER_BETA=2;
+	public static final int VER_SPEC=3;
 	//版本标识  0-Release 1-Debug 2-Beta 3-Special
-	public static final int __g_ver_VerSign=0;
+	private static int __g_ver_VerSign=VER_REL;
 	
 	public static String getVersion(){
 		return __g_ver_MainVer+"."+__g_ver_SubVer+"."+__g_ver_FixVer+"(Build"+__g_ver_Build+")"+getVersionRelOrDebug();
@@ -27,13 +32,17 @@ public class MainClass {
 		return __g_ver_MainVer+"."+__g_ver_SubVer+"."+__g_ver_FixVer+getVersionRelOrDebug();
 	}
 	
+	public static int getVersionSig(){
+		return MainClass.__g_ver_VerSign;
+	}
+	
 	public static String getVersionRelOrDebug(){
 		String sig="";
 		switch(MainClass.__g_ver_VerSign){
-		case 0:sig="正式版本";break;
-		case 1:sig="调试版本";break;
-		case 2:sig="测试版本";break;
-		case 3:sig="特殊版本";break;
+		case VER_REL:sig="正式版本";break;
+		case VER_DEBUG:sig="调试版本";break;
+		case VER_BETA:sig="测试版本";break;
+		case VER_SPEC:sig="特殊版本";break;
 		}
 		return sig;
 	}

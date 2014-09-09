@@ -69,8 +69,12 @@ public class ClickHelp implements ActionListener{
 			add(jta,BorderLayout.NORTH);
 			JButton debug=new JButton("Debug");
 			debug.addActionListener(new ClickDebug(ip,admin,pwd));
+			if(MainClass.getVersionSig()!=MainClass.VER_DEBUG && MainClass.getVersionSig()!=MainClass.VER_BETA) {
+				debug.setEnabled(false);
+				debug.setText("Debug(仅调试/测试版本可用)");
+			}				
 			add(debug,BorderLayout.SOUTH);
-			this.setSize(650, 550);
+			this.setSize(650, 545);
 			this.setVisible(true);
 		}
 	}
