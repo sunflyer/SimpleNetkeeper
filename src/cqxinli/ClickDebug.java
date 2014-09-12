@@ -47,25 +47,57 @@ public class ClickDebug implements ActionListener{
 	                        sb.append((char)chint);  
 	                    }  
 	                    String html=sb.toString(); 
+	                    Log.log("在《新版本固件处理方式》取得的HTML内容如下"+Log.nLine+html);
 	                    Boolean isAuthed=false;
 	                    //设置可用  如果检测到登陆成功后的框架代码
 	                    //set it available if detected keyword that appear in the page which means login success.
 	                    if(html.indexOf("noframe")>0 || html.indexOf("frame")>=0){
 	                    	isAuthed=true;                   	
 	                    }
-	                    //DEBUG用，输出调试数据
-	                    System.out.print(isAuthed+"\nBasic "    
-	                            + Base64.encode(admin.getValue()+":"+pwd.getPassword())+"\n"+html);
+	                    Log.log("DEBUG:以最新固件方式的最终处理结果为："+(isAuthed?"可用":"不可用"));
 	                }    
 	            }    
 	        } catch (MalformedURLException e1) {    
-	            e1.printStackTrace();    
+	            Log.log(e1.getMessage()); 
 	        } catch (IOException e1) {    
-	            e1.printStackTrace();    
+	            Log.log(e1.getMessage());  
+	            this.detectOld(ip.getValue(), admin.getValue()+":"+pwd.getPassword());
+	            
 	        }  
 		}else{
 			JOptionPane.showMessageDialog(null,"请确定你输入的IP和管理员账户无误！");
 		}
+	}
+	
+	private void detectOld(String URL, String auth) {
+		try {
+			Log.log("尝试以旧版本的方式检测可用性");
+			URL pUrl = new URL("http://"+URL);
+			HttpURLConnection pHuc = (HttpURLConnection) pUrl.openConnection();
+
+			pHuc.setRequestProperty("Authorization",
+					"Basic " + Base64.encode(auth));
+			pHuc.setRequestProperty("Content-Length", "0");
+			pHuc.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded");
+			pHuc.connect();
+			InputStream in = pHuc.getInputStream();
+			StringBuffer sb = new StringBuffer();
+			int chint;
+			while ((chint = in.read()) != -1) {
+				sb.append((char) chint);
+			}
+			String html = sb.toString();
+			if (html.indexOf("noframe") > 0 || html.indexOf("frame") >= 0){
+				Log.log("DEBUG:以《旧版本固件处理方式》的结果为可用");
+			}
+			else {
+				Log.log("DEBUG:以《旧版本固件处理方式》的结果为不可用"+Log.nLine+html);
+			}
+		} catch (IOException e) {
+			Log.log(e.getMessage());
+		}
+
 	}
 	
 }

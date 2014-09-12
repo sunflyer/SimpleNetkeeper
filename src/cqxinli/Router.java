@@ -20,6 +20,7 @@ public class Router {
 	private String dialingPWD;
 	private CXKUsername un;
 	private int mAuthMethod;
+	private boolean mIsInit;
 	public static final int AUTH_OLD = 401;
 	public static final int AUTH_WEB = 402;
 	public static final int AUTH_NOT_AVALIABLE = 0;
@@ -32,9 +33,39 @@ public class Router {
 		this.dialer = dialer;
 		this.dialingPWD = dialingPWD;
 		this.un = new CXKUsername(this.dialer);
+		this.mIsInit = true;
 		this.mAuthMethod = Router.AUTH_NOT_AVALIABLE;
-		runCgi("http://" + this.ip, this.username + ":" + this.password);
+		runCgi("http://" + this.ip, (this.username + ":" + this.password));
+	}
 
+	public Router(String ip, String username, String pswd, String dialer,
+			String dialingPWD,int authMethod) {
+			this.ip = ip;
+			this.username = username;
+			this.password = pswd;
+			this.dialer = dialer;
+			this.dialingPWD = dialingPWD;
+			this.un = new CXKUsername(this.dialer);
+			this.mIsInit = true;
+			this.mAuthMethod = authMethod;
+			if(authMethod==Router.AUTH_NOT_AVALIABLE) 
+				runCgi("http://" + this.ip, (this.username + ":" + this.password));
+	}
+	
+	public Router() {
+		this.mAuthMethod = Router.AUTH_NOT_AVALIABLE;
+		this.mIsInit = false;
+	}
+
+	public void setRouterData(String ip, String username, String pswd,
+			String dialer, String dialingPWD) {
+		this.ip = ip;
+		this.username = username;
+		this.password = pswd;
+		this.dialer = dialer;
+		this.dialingPWD = dialingPWD;
+		this.mIsInit = true;
+		runCgi("http://" + this.ip, this.username + ":" + this.password);
 	}
 
 	/**
@@ -51,22 +82,24 @@ public class Router {
 	 *         - 4 if InputStream processing error (IOException Occurred)<br>
 	 *         - 5 if application can not get Connection Object<br>
 	 *         - 6 if no authentication method avaliable<br>
+	 *         - 7 if Meta Data not initialized Correctly;<br>
 	 *         - 9 if the application detected another login request to complete
 	 *         this operation, or some routers limited this functions that
 	 *         permision denied.<br>
 	 *         - 10 if error Unknown
 	 */
 	public int connect() {
-		if (this.mAuthMethod != Router.AUTH_NOT_AVALIABLE) {
+		if (this.mAuthMethod != Router.AUTH_NOT_AVALIABLE && this.mIsInit) {
 			String encodeName = null;
 			String encodePassword = null;
 			try {
+				Log.log("开始计算加密用户名数据");
 				// 替换出现的+为空格，否则用户名错误。
 				encodeName = URLEncoder.encode(un.Realusername(), "UTF-8")
 						.replace("+", "%2D");
 				encodePassword = URLEncoder.encode(this.dialingPWD, "UTF-8");
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				Log.log(ex.getMessage());
 				return -1;
 			}
 			// 目标地址，这是设置路由器登陆最必须的条件。
@@ -82,6 +115,7 @@ public class Router {
 
 			switch (this.mAuthMethod) {
 			case Router.AUTH_WEB: {
+				Log.log("程序正在模拟最新固件操作方式");
 				URL tar = null;
 				HttpURLConnection Tarhuc = null;
 				try {
@@ -96,7 +130,7 @@ public class Router {
 											+ Base64.encode(this.username + ":"
 													+ this.password));
 							this.setProperties(Tarhuc);
-							DataFrame.showTips("处理登录信息和头内容完毕，开始请求操作");
+							Log.log("正在尝试请求数据");
 							Tarhuc.connect();
 							InputStream is = Tarhuc.getInputStream();
 							return this.getResponse(is, URL);
@@ -104,14 +138,15 @@ public class Router {
 						return 5;
 					}
 				} catch (MalformedURLException ex) {
-					ex.printStackTrace();
+					Log.log(ex.getMessage());
 					return 1;
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.log(e.getMessage());
 					return 4;
 				}
 			}
 			case Router.AUTH_OLD: {
+				Log.log("正在尝试旧版本登陆操作");
 				URL mRouterUrl = null;
 				HttpURLConnection mRouterUrlCon = null;
 				try {
@@ -125,16 +160,17 @@ public class Router {
 										+ Base64.encode(this.username + ":"
 												+ this.password));
 						this.setProperties(mRouterUrlCon);
+						Log.log("正在尝试请求数据");
 						mRouterUrlCon.connect();
 						return this.getResponse(mRouterUrlCon.getInputStream(),
 								URL);
 					}
 					return 5;
 				} catch (MalformedURLException e) {
-					e.printStackTrace();
+					Log.log(e.getMessage());
 					return 1;
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.log(e.getMessage());
 					return 4;
 				}
 			}
@@ -142,19 +178,21 @@ public class Router {
 				return 6;
 			}
 		}
-		return -2;
+		Log.log(this.mIsInit ? "无法通过现有方式访问路由器，可能是因为账户错误，或者不支持。"
+				: "检测到用户数据未被初始化，操作已经停止");
+		return this.mIsInit ? -2 : 7;
 	}
 
 	private void setProperties(HttpURLConnection Tarhuc) {
 		// 设置引用页避免权限错误
-		Tarhuc.setRequestProperty("Referer", "http://" + this.ip
-				+ "/userRpm/PPPoECfgRpm.htm");
+		Tarhuc.setRequestProperty("Referer", "http://" + this.ip + "/");
 		Tarhuc.setRequestProperty("Host", this.ip);
 		Tarhuc.setRequestProperty("Connection", "Keep-alive");
 		Tarhuc.setRequestProperty("Content-Length", "0");
 		Tarhuc.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
 		Tarhuc.setConnectTimeout(5000);
+		Log.log("相关属性已经设置完毕");
 	}
 
 	private int getResponse(InputStream is, String URL) {
@@ -165,19 +203,20 @@ public class Router {
 				sb.append((char) data);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.log(e.getMessage());
 		}
 		String ResponseHTML = sb.toString();
-		System.out.println(ResponseHTML);
-		DataFrame.showTips("正在处理操作结果");
+		Log.log("正在处理操作结果");
 		if (ResponseHTML
 				.indexOf("You have no authority to access this device!") >= 0) {
+			Log.log("检测到关键字：无授权访问");
 			return 3;
 		} else if (ResponseHTML.indexOf("noframe") >= 0
 				|| ResponseHTML.indexOf("已连接") >= 0
 				|| ResponseHTML.indexOf("PPPoECfgRpm.htm") >= 0) {
 			return 0;
 		} else if (ResponseHTML.indexOf("loginBox") >= 0) {
+			Log.log("检测到额外登陆操作");
 			new FormTips(URL);
 		}
 		return 9;
@@ -211,70 +250,110 @@ public class Router {
 	 *            : Username and password (for access network)
 	 */
 	private void runCgi(String urlStr, String authorizationStr) {
-		DataFrame.showTips("正在验证路由器可用性");
-		URL xUrl = null;
-		HttpURLConnection xHuc = null;
-		try {
-			xUrl = new URL(urlStr);
-			if (xUrl != null) {
-				xHuc = (HttpURLConnection) xUrl.openConnection();
-				if (xHuc != null) {
-					if (!"".equals(authorizationStr)) {
-						// 设置路由器的COOKIE验证
-						xHuc.setRequestProperty(
-								"Cookie",
-								"Authorization=Basic "
-										+ Base64.encode(authorizationStr));
-						xHuc.setRequestProperty("Content-Length", "0");
-						xHuc.setRequestProperty("Content-Type",
-								"application/x-www-form-urlencoded");
+		if (this.mIsInit) {
+			Log.log("正在尝试以新版本固件的方式处理操作数据");
+			URL xUrl = null;
+			HttpURLConnection xHuc = null;
+			try {
+				xUrl = new URL(urlStr);
+				if (xUrl != null) {
+					xHuc = (HttpURLConnection) xUrl.openConnection();
+					if (xHuc != null) {
+						if (!"".equals(authorizationStr)) {
+							// 设置路由器的COOKIE验证
+							xHuc.setRequestProperty(
+									"Cookie",
+									"Authorization=Basic "
+											+ Base64.encode(authorizationStr));
+							xHuc.setRequestProperty("Content-Length", "0");
+							xHuc.setRequestProperty("Content-Type",
+									"application/x-www-form-urlencoded");
 
-					}
-
-					xHuc.connect();
-					InputStream in = xHuc.getInputStream();
-					int chint = 0;
-					StringBuffer sb = new StringBuffer();
-					while ((chint = in.read()) != -1) {
-						sb.append((char) chint);
-					}
-					String html = sb.toString();
-					DataFrame.showTips("检查是否可用");
-					// 设置可用 如果检测到登陆成功后的框架代码
-					// set it available if detected keyword that appear in the
-					// page which means login success.
-					if (html.indexOf("noframe") > 0
-							|| html.indexOf("frame") >= 0) {
-						this.mAuthMethod = Router.AUTH_WEB;
-					} else {
-						// 尝试旧版本
-						xHuc.setRequestProperty("Authorization", "Basic "
-								+ Base64.encode(authorizationStr));
-						xHuc.setRequestProperty("Content-Length", "0");
-						xHuc.setRequestProperty("Content-Type",
-								"application/x-www-form-urlencoded");
-						xHuc.connect();in=xHuc.getInputStream();
-						sb=new StringBuffer();
+						}
+						Log.log("开始尝试第一次连接");
+						xHuc.connect();
+						InputStream in = xHuc.getInputStream();
+						int chint = 0;
+						StringBuffer sb = new StringBuffer();
 						while ((chint = in.read()) != -1) {
 							sb.append((char) chint);
 						}
-						html = sb.toString();
-						if(html.indexOf("noframe") > 0
-								|| html.indexOf("frame") >= 0)
-							this.mAuthMethod=Router.AUTH_OLD;
-						else{
-							this.mAuthMethod=Router.AUTH_NOT_AVALIABLE;
+						String html = sb.toString();
+						Log.log("检查是否可用");
+						// 设置可用 如果检测到登陆成功后的框架代码
+						// set it available if detected keyword that appear in
+						// the
+						// page which means login success.
+						if (html.indexOf("noframe") > 0
+								|| html.indexOf("frame") >= 0) {
+							this.changeAuthMethod(AUTH_WEB);
+						} else {
+							// 尝试旧版本
+							this.changeInitState(false);
 						}
+						// DEBUG用，输出调试数据
+						Log.log(this.mAuthMethod + Log.nLine + "Basic "
+								+ Base64.encode(authorizationStr) + Log.nLine
+								+ html);
 					}
-					// DEBUG用，输出调试数据
-					System.out.print(this.mAuthMethod + "\nBasic "
-							+ Base64.encode(authorizationStr) + "\n" + html);
 				}
+			} catch (MalformedURLException e) {
+				this.changeInitState(false);
+				Log.log(e.getMessage());
+			} catch (IOException e) {
+				this.changeInitState(false);
+				Log.log(e.getMessage());
+				this.detectOld(urlStr, authorizationStr);
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} else {
+			this.changeAuthMethod(Router.AUTH_NOT_AVALIABLE);
 		}
+	}
+
+	private void changeInitState(boolean ii) {
+		this.mIsInit = ii;
+		Log.log("已经更改路由器连接初始化状态为：" + (ii ? "已初始化" : "未初始化"));
+		if (!ii)
+			changeAuthMethod(Router.AUTH_NOT_AVALIABLE);
+	}
+
+	private void changeAuthMethod(int Au) {
+		this.mAuthMethod = Au;
+		MainClass.setAuthMethod(Au);
+		Log.log("已更改路由器验证方式为：" + Au);
+		if(Au!=Router.AUTH_NOT_AVALIABLE) 
+			this.changeInitState(true);
+	}
+
+	private void detectOld(String URL, String auth) {
+		try {
+			Log.log("尝试以旧版本的方式检测可用性");
+			URL pUrl = new URL(URL);
+			HttpURLConnection pHuc = (HttpURLConnection) pUrl.openConnection();
+
+			pHuc.setRequestProperty("Authorization",
+					"Basic " + Base64.encode(auth));
+			pHuc.setRequestProperty("Content-Length", "0");
+			pHuc.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded");
+			pHuc.connect();
+			InputStream in = pHuc.getInputStream();
+			StringBuffer sb = new StringBuffer();
+			int chint;
+			while ((chint = in.read()) != -1) {
+				sb.append((char) chint);
+			}
+			String html = sb.toString();
+			if (html.indexOf("noframe") > 0 || html.indexOf("frame") >= 0){
+				this.changeAuthMethod(Router.AUTH_OLD);
+			}
+			else {
+				this.changeInitState(false);
+				Log.log(html);
+			}
+		} catch (IOException e) {
+			Log.log(e.getMessage());
+		}
+
 	}
 }

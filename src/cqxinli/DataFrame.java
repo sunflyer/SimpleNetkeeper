@@ -81,7 +81,7 @@ public class DataFrame extends JFrame{
 		save.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainClass.saveUserData(name, password, ip, adminName, adminPassword);
+				MainClass.saveUserData(name.getValue(), password.getPassword(), ip.getValue(), adminName.getValue(), adminPassword.getPassword());
 			}
 			
 		});
@@ -94,6 +94,7 @@ public class DataFrame extends JFrame{
 		this.add(jp3);
 		JLabel ver=new JLabel("版本"+MainClass.getVersionNoBuild()+" by CrazyChen@CQUT");
 		add(ver);		
+		Log.log("已经完成界面载入操作");
 	}
 	
 	public static void showTips(String info){
