@@ -2,6 +2,7 @@ package cqxinli;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -68,6 +69,20 @@ public class Router {
 		runCgi("http://" + this.ip, this.username + ":" + this.password);
 	}
 
+	
+	public static final int RES_UNABLE_ACCESS=-2;
+	public static final int RES_UNABLE_ENCODE=-1;
+	public static final int RES_SUCCESS=0;
+	public static final int RES_IP_INVALID=1;
+	public static final int RES_NO_DIAL_MODE=2;
+	public static final int RES_NO_AUTHORITY=3;
+	public static final int RES_IO_EXCEPTION=4;
+	public static final int RES_NO_CONNECTION_OBJ=5;
+	public static final int RES_AUTHENTICATION_NO_METHED=6;
+	public static final int RES_META_DATA_NOT_INIT=7;
+	public static final int RES_ALGRITHOM_NOT_ALLOWED=8;
+	public static final int RES_REQUIRE_LOGIN=9;
+	public static final int RES_ERROR_UNKNOWN=10;
 	/**
 	 * @return The connection statement of the router you configured.<br>
 	 *         - -2 if unable to access the device with the account and password
@@ -75,43 +90,80 @@ public class Router {
 	 *         - -1 if unable to encode the username and password to URL
 	 *         Encoding<br>
 	 *         - 0 if configuration success.<br>
+	 *         - 2 if dialing mode is not pointed<br>
 	 *         - 1 if IP address is not valid<br>
 	 *         - 3 if the router returns that no authority to access this
 	 *         device.(Always caused by the ROM rejected the access even though
 	 *         your name and password is right)<br>
 	 *         - 4 if InputStream processing error (IOException Occurred)<br>
 	 *         - 5 if application can not get Connection Object<br>
-	 *         - 6 if no authentication method avaliable<br>
+	 *         - 6 if no authentication method available<br>
 	 *         - 7 if Meta Data not initialized Correctly;<br>
+	 *         - 8 if the Algrithom for calculating truly account is not allowed<br>
 	 *         - 9 if the application detected another login request to complete
 	 *         this operation, or some routers limited this functions that
-	 *         permision denied.<br>
+	 *         permission denied.<br>
 	 *         - 10 if error Unknown
 	 */
 	public int connect() {
 		if (this.mAuthMethod != Router.AUTH_NOT_AVALIABLE && this.mIsInit) {
 			String encodeName = null;
 			String encodePassword = null;
-			try {
-				Log.log("开始计算加密用户名数据");
-				// 替换出现的+为空格，否则用户名错误。
-				encodeName = URLEncoder.encode(un.Realusername(), "UTF-8")
-						.replace("+", "%2D");
-				encodePassword = URLEncoder.encode(this.dialingPWD, "UTF-8");
-			} catch (Exception ex) {
-				Log.log(ex.getMessage());
-				return -1;
+			if(MainClass.getEncrytedAcc()){
+				try {
+					Log.log("开始计算加密用户名数据");
+					// 替换出现的+为空格，否则用户名错误。
+					encodeName = URLEncoder.encode(un.Realusername(), "UTF-8")
+							.replace("+", "%2D");
+					encodePassword = URLEncoder.encode(this.dialingPWD, "UTF-8");
+				} catch (Exception ex) {
+					Log.logE(ex);
+					return Router.RES_UNABLE_ENCODE;
+				}
+			}else{
+				Log.log("检测到连接模式为《家用模式》");
+				try {
+					encodeName=URLEncoder.encode(username,"UTF-8").replace("+", "%2D");
+					encodePassword=URLEncoder.encode(this.dialingPWD,"UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					Log.logE(e);
+				}
+				
 			}
+			
 			// 目标地址，这是设置路由器登陆最必须的条件。
-			String URL = "http://"
-					+ this.ip
-					+ "/userRpm/PPPoECfgRpm.htm?wan=0&wantype=2&acc="
-					+ encodeName
-					+ "&psw="
-					+ encodePassword
-					+ "&confirm="
-					+ encodePassword
-					+ "sta_ip=0.0.0.0&sta_mask=0.0.0.0&linktype=2&Connect=%C1%AC+%BD%D3";
+			
+			String URL = null;
+			switch(MainClass.getDialType()){
+			case MainClass.DIAL_AUTO:
+				URL="http://"
+						+ this.ip
+						+ "/userRpm/PPPoECfgRpm.htm?wan=0&wantype=2&acc="
+						+ encodeName
+						+ "&psw="
+						+ encodePassword
+						+ "&confirm="
+						+ encodePassword
+						+ "sta_ip=0.0.0.0&sta_mask=0.0.0.0&linktype=2&Connect=%C1%AC+%BD%D3";
+				;break;
+			case MainClass.DIAL_BY_USER:
+			case MainClass.DIAL_ON_NEED:
+			case MainClass.DIAL_ON_TIME:
+				URL="http://"
+						+ this.ip
+						+ "/userRpm/PPPoECfgRpm.htm?wan=0&wantype=2&acc="
+						+ encodeName
+						+ "&psw="
+						+ encodePassword
+						+ "&confirm="
+						+ encodePassword
+						+ "sta_ip=0.0.0.0&sta_mask=0.0.0.0&linktype=4&waittime2=0&Connect=%C1%AC+%BD%D3";
+				;break;
+			default:return Router.RES_NO_DIAL_MODE;
+			}
+			//linktype=2 : 自动连接
+			
+			Log.log("检查到的连接类型为："+MainClass.getDialType());
 
 			switch (this.mAuthMethod) {
 			case Router.AUTH_WEB: {
@@ -135,14 +187,14 @@ public class Router {
 							InputStream is = Tarhuc.getInputStream();
 							return this.getResponse(is, URL);
 						}
-						return 5;
+						return Router.RES_NO_CONNECTION_OBJ;
 					}
 				} catch (MalformedURLException ex) {
-					Log.log(ex.getMessage());
-					return 1;
+					Log.logE(ex);
+					return Router.RES_IP_INVALID;
 				} catch (IOException e) {
-					Log.log(e.getMessage());
-					return 4;
+					Log.logE(e);
+					return Router.RES_IO_EXCEPTION;
 				}
 			}
 			case Router.AUTH_OLD: {
@@ -165,22 +217,22 @@ public class Router {
 						return this.getResponse(mRouterUrlCon.getInputStream(),
 								URL);
 					}
-					return 5;
+					return Router.RES_NO_CONNECTION_OBJ;
 				} catch (MalformedURLException e) {
-					Log.log(e.getMessage());
-					return 1;
+					Log.logE(e);
+					return Router.RES_IP_INVALID;
 				} catch (IOException e) {
-					Log.log(e.getMessage());
-					return 4;
+					Log.logE(e);
+					return Router.RES_IO_EXCEPTION;
 				}
 			}
 			default:
-				return 6;
+				return Router.RES_AUTHENTICATION_NO_METHED;
 			}
 		}
 		Log.log(this.mIsInit ? "无法通过现有方式访问路由器，可能是因为账户错误，或者不支持。"
 				: "检测到用户数据未被初始化，操作已经停止");
-		return this.mIsInit ? -2 : 7;
+		return this.mIsInit ? Router.RES_UNABLE_ACCESS : Router.RES_META_DATA_NOT_INIT;
 	}
 
 	private void setProperties(HttpURLConnection Tarhuc) {
@@ -203,23 +255,23 @@ public class Router {
 				sb.append((char) data);
 			}
 		} catch (IOException e) {
-			Log.log(e.getMessage());
+			Log.logE(e);
 		}
 		String ResponseHTML = sb.toString();
 		Log.log("正在处理操作结果");
 		if (ResponseHTML
 				.indexOf("You have no authority to access this device!") >= 0) {
 			Log.log("检测到关键字：无授权访问");
-			return 3;
+			return Router.RES_NO_AUTHORITY;
 		} else if (ResponseHTML.indexOf("noframe") >= 0
 				|| ResponseHTML.indexOf("已连接") >= 0
 				|| ResponseHTML.indexOf("PPPoECfgRpm.htm") >= 0) {
-			return 0;
+			return Router.RES_SUCCESS;
 		} else if (ResponseHTML.indexOf("loginBox") >= 0) {
 			Log.log("检测到额外登陆操作");
 			new FormTips(URL);
 		}
-		return 9;
+		return Router.RES_REQUIRE_LOGIN;
 	}
 
 	/**
@@ -299,10 +351,10 @@ public class Router {
 				}
 			} catch (MalformedURLException e) {
 				this.changeInitState(false);
-				Log.log(e.getMessage());
+				Log.logE(e);
 			} catch (IOException e) {
 				this.changeInitState(false);
-				Log.log(e.getMessage());
+				Log.logE(e);
 				this.detectOld(urlStr, authorizationStr);
 			}
 		} else {
@@ -352,7 +404,7 @@ public class Router {
 				Log.log(html);
 			}
 		} catch (IOException e) {
-			Log.log(e.getMessage());
+			Log.logE(e);
 		}
 
 	}

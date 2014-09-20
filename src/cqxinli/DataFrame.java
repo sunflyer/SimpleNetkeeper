@@ -1,5 +1,6 @@
 package cqxinli;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -37,7 +38,6 @@ public class DataFrame extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		addPanel();
-		MainClass.setUserData(name, password, ip, adminName, adminPassword);
 		this.setVisible(true);		
 	}
 	
@@ -67,33 +67,50 @@ public class DataFrame extends JFrame{
 		JPanel jp3=new JPanel();		
 		//JButton dial=new JButton("本机连接");
 		//dial.addActionListener(new ClickDial(name,password));
-		JButton gen=new JButton("生成");
+		JButton pButGen=new JButton("生成");
 		RealUserFrame ruf=new RealUserFrame();
-		gen.addActionListener(new ClickGen(name,ruf,password,ip));
-		JButton set=new JButton("设置路由器");
+		pButGen.addActionListener(new ClickGen(name,ruf,password,ip));
+		JButton pButSet=new JButton("设置路由器");
 		//用户名，密码，IP,路由器管理员名称，管理员密码
-		set.addActionListener(new ClickSet(name,password,ip,adminName,adminPassword));
-		JButton def=new JButton("默认");
-		def.addActionListener(new ClickDefault(ip,adminName,adminPassword));
-		JButton help=new JButton("帮助");
-		help.addActionListener(new ClickHelp(ip,adminName,adminPassword));
-		JButton save = new JButton("保存");
-		save.addActionListener(new ActionListener(){
+		pButSet.addActionListener(new ClickSet(name,password,ip,adminName,adminPassword));
+		JButton pButDef=new JButton("默认");
+		pButDef.addActionListener(new ClickDefault(ip,adminName,adminPassword));
+		JButton pButHelp=new JButton("帮助");
+		pButHelp.addActionListener(new ClickHelp(ip,adminName,adminPassword));
+		JButton pButSave = new JButton("保存");
+		pButSave.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainClass.saveUserData(name.getValue(), password.getPassword(), ip.getValue(), adminName.getValue(), adminPassword.getPassword());
 			}
 			
 		});
+		
+		MainClass.setUserData(name, password, ip, adminName, adminPassword);
+		
+		JButton pButAdvance=new JButton("高级");
+		final AdvanceFrame pAdvFrame=new AdvanceFrame();
+		pButAdvance.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pAdvFrame.setVisible(true);
+			}
+			
+		});
 		//jp3.add(dial);
-		jp3.add(gen);		
-		jp3.add(def);
-		jp3.add(set);
-		jp3.add(save);
-		jp3.add(help);
+		jp3.add(pButGen);		
+		jp3.add(pButDef);
+		jp3.add(pButSet);
+		jp3.add(pButSave);
+		jp3.add(pButAdvance);
 		this.add(jp3);
-		JLabel ver=new JLabel("版本"+MainClass.getVersionNoBuild()+" by CrazyChen@CQUT");
-		add(ver);		
+		JPanel pVerPanel=new JPanel();
+		pVerPanel.setLayout(new BorderLayout());
+		JLabel pLabVer=new JLabel("版本"+MainClass.getVersionNoBuild()+" by CrazyChen@CQUT");
+		pVerPanel.add(pLabVer,BorderLayout.WEST);
+		pVerPanel.add(pButHelp,BorderLayout.EAST);
+		add(pVerPanel);		
 		Log.log("已经完成界面载入操作");
 	}
 	

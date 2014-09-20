@@ -58,9 +58,9 @@ public class ClickDebug implements ActionListener{
 	                }    
 	            }    
 	        } catch (MalformedURLException e1) {    
-	            Log.log(e1.getMessage()); 
+	            Log.logE(e1); 
 	        } catch (IOException e1) {    
-	            Log.log(e1.getMessage());  
+	            Log.logE(e1);  
 	            this.detectOld(ip.getValue(), admin.getValue()+":"+pwd.getPassword());
 	            
 	        }  
@@ -95,7 +95,7 @@ public class ClickDebug implements ActionListener{
 				Log.log("DEBUG:以《旧版本固件处理方式》的结果为不可用"+Log.nLine+html);
 			}
 		} catch (IOException e) {
-			Log.log(e.getMessage());
+			Log.logE(e);
 		}
 
 	}

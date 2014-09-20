@@ -10,7 +10,6 @@ public class Log {
 	public static final String gLogFilePathWindows="C:\\";	
 	public static final String gLogFilePathLinux="/usr/share/";
 	public static final String nLine=System.getProperties().getProperty("line.separator");
-	private static final Date gTime=new Date();
 	private static File gLogFile=null;
 	//初始化事件记录的标记
 	private static boolean gIsInit=false;
@@ -18,6 +17,7 @@ public class Log {
 	private static FileWriter mLogger=null;
 	private static String gLogPath=null;
 	private static int gInitErrorTime=0;
+	public static final int gInitErrorTimeLimit=6;
 	
 	public static void initLogger(String FilePath){
 		gLogPath=FilePath;
@@ -48,16 +48,41 @@ public class Log {
 		if(isInit()){
 			try {
 				mLogger=new FileWriter(Log.gLogFile,true);
-				mLogger.write(gTime.toString()+"："+pCon+Log.nLine);
+				mLogger.write((new Date()).toString()+"："+pCon+Log.nLine);
 				mLogger.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}else{
-			if(Log.gInitErrorTime<6){
+			if(Log.gInitErrorTime<Log.gInitErrorTimeLimit){
 				initLogger(System.getProperty("user.dir"));
 				log(pCon);
 			}			
 		}
+	}
+	
+	public static void logE(Exception e){
+		if(isInit()){
+			try {
+				mLogger=new FileWriter(Log.gLogFile,true);
+				mLogger.write((new Date()).toString()+"：################发现异常################"+Log.nLine+e.getMessage()+Log.nLine+Log.getStackTrace(e)+Log.nLine);
+				mLogger.close();
+			} catch (IOException ex) {
+				e.printStackTrace();
+			}
+		}else{
+			if(Log.gInitErrorTime<Log.gInitErrorTimeLimit){
+				initLogger(System.getProperty("user.dir"));
+				logE(e);
+			}			
+		}
+	}
+	
+	public static String getStackTrace(Exception e){
+		StringBuffer pSb=new StringBuffer();
+		StackTraceElement[] pSte=e.getStackTrace();
+		for(int i=0;i<pSte.length;i++)
+			pSb.append(pSte[i].toString()+Log.nLine);
+		return pSb.toString();
 	}
 }
