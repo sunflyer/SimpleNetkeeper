@@ -17,11 +17,31 @@ import javax.swing.JPanel;
 public class DataFrame extends JFrame{
 	
 	private static JLabel Tips=new JLabel("准备就绪，请输入必要信息后，直接点击“设置”开始设置路由器");
-	private static FormPanel name=null;
-	private static PasswordPanel password=null;
-	private static FormPanel ip=null;
-	private static FormPanel adminName=null;
-	private static PasswordPanel adminPassword=null;
+	private FormPanel name=null;
+	private PasswordPanel password=null;
+	private FormPanel ip=null;
+	private FormPanel adminName=null;
+	private PasswordPanel adminPassword=null;
+	
+	public String g_getAccName(){
+		return name.getValue();
+	}
+	
+	public String g_getAccPassword(){
+		return this.password.getPassword();
+	}
+	
+	public String g_getRouterIP(){
+		return this.ip.getValue();
+	}
+	
+	public String g_getRouterAdmin(){
+		return this.adminName.getValue();
+	}
+	
+	public String g_getRouterPassword(){
+		return this.adminPassword.getPassword();
+	}
 	
 	public DataFrame(String name){
 		super(name);
@@ -68,11 +88,11 @@ public class DataFrame extends JFrame{
 		//JButton dial=new JButton("本机连接");
 		//dial.addActionListener(new ClickDial(name,password));
 		JButton pButGen=new JButton("生成");
-		RealUserFrame ruf=new RealUserFrame();
-		pButGen.addActionListener(new ClickGen(name,ruf,password,ip));
+		RealUserFrame pRuf=new RealUserFrame();
+		pButGen.addActionListener(new ClickGen(name,pRuf,password,ip));
 		JButton pButSet=new JButton("设置路由器");
 		//用户名，密码，IP,路由器管理员名称，管理员密码
-		pButSet.addActionListener(new ClickSet(name,password,ip,adminName,adminPassword));
+		pButSet.addActionListener(new ClickSet(pButSet,this));
 		JButton pButDef=new JButton("默认");
 		pButDef.addActionListener(new ClickDefault(ip,adminName,adminPassword));
 		JButton pButHelp=new JButton("帮助");
@@ -89,7 +109,7 @@ public class DataFrame extends JFrame{
 		MainClass.setUserData(name, password, ip, adminName, adminPassword);
 		
 		JButton pButAdvance=new JButton("高级");
-		final AdvanceFrame pAdvFrame=new AdvanceFrame();
+		final AdvanceFrame pAdvFrame=new AdvanceFrame(this);
 		pButAdvance.addActionListener(new ActionListener(){
 
 			@Override

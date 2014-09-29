@@ -2,8 +2,10 @@ package cqxinli;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,13 +42,14 @@ public class ClickDebug implements ActionListener{
 	                    xHuc.setRequestProperty("Content-Type",    
 	                            "application/x-www-form-urlencoded");    
 	                    xHuc.connect();     
-	                    InputStream in=xHuc.getInputStream();  
+	                    BufferedReader pBufRdr=new BufferedReader(new InputStreamReader(xHuc.getInputStream(),MainClass.getRouterPageEncode()));
 	                    int chint=0;  
 	                    StringBuffer sb=new StringBuffer();  
-	                    while((chint=in.read())!=-1){  
+	                    while((chint=pBufRdr.read())!=-1){  
 	                        sb.append((char)chint);  
 	                    }  
 	                    String html=sb.toString(); 
+	                    System.out.print(html);
 	                    Log.log("在《新版本固件处理方式》取得的HTML内容如下"+Log.nLine+html);
 	                    Boolean isAuthed=false;
 	                    //设置可用  如果检测到登陆成功后的框架代码
