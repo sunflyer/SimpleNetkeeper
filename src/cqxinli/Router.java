@@ -379,7 +379,12 @@ public class Router {
 	 * */
 	public void trackLink(){
 		boolean getData=true;
+		int count = 0;
 		while(getData){
+			if(++count==15) {
+				getData=false;
+				this.setState("已尝试向路由器发送数据，但在超过时限后没有收到必须的信息，操作已经终止");
+			};
 			try {
 				HttpURLConnection mHuc=getConnection("http://"+ip+"/userRpm/PPPoECfgRpm.htm");
 				if(setDialProperty(mHuc)!=0){
@@ -390,13 +395,13 @@ public class Router {
 					if(getResponseData(mContent, "正在连接")){
 						DataFrame.showTips("正在建立连接中");
 					}else if(getResponseData(mContent,"已连接")){
-						DataFrame.showTips("已经连接");
+						this.setState("已经建立连接");
 						getData=false;
 					}else if(getResponseData(mContent,"服务器") || getResponseData(mContent,"响应")){
-						DataFrame.showTips("检测到服务器没有响应，你需要重新设置连接。");
+						this.setState("服务器没有响应，可能是拨号过于频繁而被服务器拒绝，请三分钟后重试");
 						getData=false;
 					}else if(getResponseData(mContent,"用户名") || getResponseData(mContent,"密码") || getResponseData(mContent,"错误")){
-						DataFrame.showTips("用户名或者密码错误");
+						this.setState("远程服务器报告用户名或者密码错误（691）");
 						getData=false;
 					}
 					/*
@@ -414,6 +419,11 @@ public class Router {
 				getData=false;
 			}
 		}
+	}
+	
+	private void setState(String r){
+		DataFrame.showTips(r);
+		Log.log(r);
 	}
 	
 	/** 
