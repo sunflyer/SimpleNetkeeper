@@ -50,7 +50,7 @@ public class ClickHelp implements ActionListener{
 			jta.setLineWrap(true);
 			//由于String 的拼接操作非常缓慢，因此更换为StringBuilder处理信息
 			StringBuilder sb=new StringBuilder();
-			sb.append("欢迎使用Netkeeper Dialer For Router 版本"+MainClass.getVersion()+"\n");
+			sb.append("欢迎使用Netkeeper Dialer For Router 版本"+MainClass.getVersion()+MainClass.BUILD_DATE+"\n");
 			sb.append("这个小JAVA程序可以方便的一键设置路由器拨号。适用于重庆地区校园宽带用户。\n\n");
 			sb.append("已在TP-LINK最新固件，以及水星(Mercury)路由器测试通过，其他路由器请自行测试。理论可用。(D-LINK貌似有一点区别，请自行测试，不可用请联系我方便做出修正)\n\n");
 			sb.append("重要提示：如果路由器断电，请尝试重新启动路由器，然后路由器通电3分钟后再进行连接。由于断电重连的原因路由器通电后的首次拨号时间会比较长，请耐心等待\n\n");

@@ -9,7 +9,8 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 public class MainClass {
-	public static final String __g_ver_Build="201409281657";
+	public static final String __g_ver_Build="0024";
+	public static final String BUILD_DATE="2014-09-29 19:29";
 	public static final int __g_ver_MainVer=1;
 	public static final int __g_ver_SubVer=1;
 	public static final int __g_ver_FixVer=0;
@@ -20,7 +21,7 @@ public class MainClass {
 	public static final int VER_BETA=2;
 	public static final int VER_SPEC=3;
 	//版本标识  0-Release 1-Debug 2-Beta 3-Special
-	private static int __g_ver_VerSign=VER_DEBUG;
+	private static int __g_ver_VerSign=VER_REL;
 	
 	
 	//DEBUG标签
