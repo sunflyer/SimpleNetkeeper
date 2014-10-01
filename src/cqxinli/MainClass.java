@@ -9,11 +9,11 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 public class MainClass {
-	public static final String __g_ver_Build="0024";
-	public static final String BUILD_DATE="2014-09-29 19:29";
+	public static final String __g_ver_Build="0025";
+	public static final String BUILD_DATE="2014-10-01 23:28";
 	public static final int __g_ver_MainVer=1;
 	public static final int __g_ver_SubVer=1;
-	public static final int __g_ver_FixVer=0;
+	public static final int __g_ver_FixVer=1;
 	public static final String __g_data_file_name="NetkeeperForRouter.ini";
 	
 	public static final int VER_REL=0;
@@ -231,14 +231,30 @@ public class MainClass {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Log.log(Log.nLine+"==========================已经启动===============================");
+		boolean pGetState=false;
 		for(int i=0;i<args.length;i++){
-			if(args[i].equals("debug") || args[i].equals("/debug")){
+			if(args[i].equals("-debug") || args[i].equals("/debug")){
 				MainClass.allowDebug=true;
 				Log.log("检测到命令行指令参数："+args[i]+"，允许调试模式启动");
+			}else if(args[i].equals("-state")|| args[i].equals("/state")){
+				pGetState=true;
 			}
-		}		
+		}	
+		
 		Log.log("应用程序版本为"+MainClass.getVersion());
 		DataFrame pDF=new DataFrame("Netkeeper For Router");
+		
+		if(pGetState){			
+			Router pRouter=new Router(pDF.g_getRouterIP(),pDF.g_getRouterAdmin(),pDF.g_getRouterPassword(),pDF.g_getAccName(),pDF.g_getAccPassword());
+			pRouter.LoadPPPoEInf();
+			String[] inf=pRouter.getPPPoEInf();
+			for(String x:inf){
+				System.out.println(x);
+			}
+			System.out.println("The PPPoE Inf in index 26th is"+inf[26]);
+			pRouter.trackLink();
+		}
+		
 		String tConfirmData="您应当为本软件的使用以及行为受到约束，在同意以下条件的情况下，您可以免费使用、"
 				+ "\n分发、修改本软件或基于本软件源代码创建新的程序：\n\n"
 				+ "1.你不能将本软件或/和本软件的源代码用于商业用途，包括但不限于出售本软件（以任何形式）。\n\n"

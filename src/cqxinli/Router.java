@@ -118,6 +118,9 @@ public class Router {
 	 *         - 10 if error Unknown
 	 */
 	public int connect() {
+		if(this.getConnectionState()==CONNECTION_SUCCESS){
+			return RES_SUCCESS;
+		}
 		if (this.mAuthMethod != Router.AUTH_NOT_AVALIABLE && this.mIsInit) {
 			String encodeName = null;
 			String encodePassword = null;
@@ -135,7 +138,7 @@ public class Router {
 			}else{
 				Log.log("检测到连接模式为《家用模式》");
 				try {
-					encodeName=URLEncoder.encode(username,"UTF-8").replace("+", "%2D");
+					encodeName=URLEncoder.encode(this.dialer,"UTF-8").replace("+", "%2D");
 					encodePassword=URLEncoder.encode(this.dialingPWD,"UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					Log.logE(e);
@@ -197,16 +200,25 @@ public class Router {
 		return this.mIsInit ? Router.RES_UNABLE_ACCESS : Router.RES_META_DATA_NOT_INIT;
 	}
 
+	
+	/**
+	 * 设置HttpURLConnection对象的请求属性
+	 * 包括引用（Referer），超时（默认2000）
+	 * */
 	private void setProperties(HttpURLConnection Tarhuc) {
+		this.setProperties(Tarhuc, 200);
+	}
+	
+	private void setProperties(HttpURLConnection Tarhuc,int timeOut){
 		// 设置引用页避免权限错误
-		Tarhuc.setRequestProperty("Referer", "http://" + this.ip + "/");
-		Tarhuc.setRequestProperty("Host", this.ip);
-		Tarhuc.setRequestProperty("Connection", "Keep-alive");
-		Tarhuc.setRequestProperty("Content-Length", "0");
-		Tarhuc.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
-		Tarhuc.setConnectTimeout(2000);
-		Log.log("相关属性已经设置完毕");
+				Tarhuc.setRequestProperty("Referer", "http://" + this.ip + "/");
+				Tarhuc.setRequestProperty("Host", this.ip);
+				Tarhuc.setRequestProperty("Connection", "Keep-alive");
+				Tarhuc.setRequestProperty("Content-Length", "0");
+				Tarhuc.setRequestProperty("Content-Type",
+						"application/x-www-form-urlencoded");
+				Tarhuc.setConnectTimeout(timeOut);
+				Log.log("相关属性已经设置完毕");
 	}
 
 	
@@ -231,6 +243,71 @@ public class Router {
 	}
 	
 	
+	public static final String[] PPPoELinkStat={
+		"未连接",
+		"已连接",
+		"正在连接",
+		"用户名或密码验证失败",
+		"服务器无响应",
+		"未知原因失败",
+		"WAN口未连接"
+	};
+	
+	private String[] mPPPoEInf;
+	
+	public void LoadPPPoEInf(){
+		try {
+			HttpURLConnection pCon=this.getConnection("http://"+this.ip+"/userRpm/PPPoECfgRpm.htm");
+			if(this.setDialProperty(pCon)!=0) return;
+			pCon.connect();
+			String HTML=this.getHTMLContent(pCon.getInputStream());
+			String KeyWord2="var pppoeInf=new Array(";
+			int pIndex=HTML.indexOf(KeyWord2);
+			if(pIndex>=0){
+				int eIndex=HTML.indexOf(");", pIndex);
+				if(eIndex>pIndex){
+					this.mPPPoEInf=HTML.substring(pIndex+KeyWord2.length(),eIndex).split(",");
+					this.TrimPPPoEInf();
+					Log.log("已经检测到数组内容。长度为"+this.mPPPoEInf.length);
+				}
+					
+			}
+		} catch (IOException e) {
+			Log.logE(e);
+		}
+	}
+	
+	public void TrimPPPoEInf(){
+		for(int i=0;i<this.mPPPoEInf.length;i++){
+			this.mPPPoEInf[i]=this.mPPPoEInf[i].trim();
+		}
+	}
+	
+	public String[] getPPPoEInf(){
+		return this.mPPPoEInf;
+	}
+	
+	public static final int CONNECTION_NOT_CONNECTED=0;
+	public static final int CONNECTION_SUCCESS=1;
+	public static final int CONNECTION_NO_RESPONSE=4;
+	public static final int CONNECTION_AUTHENTICATION_FAILED=3;
+	public static final int CONNECTION_UNKNOWN=5;
+	public static final int CONNECTION_NOT_CONNECTED_WAN=6;
+	public static final int CONNECTION_OPERATION_NO_MODE=10;
+	public static final int CONNECTION_OPERATION_EXCEPTION=11;
+	public static final int CONNECTION_CONNECTING=2;
+	
+	public static final String CONNECTION_VAR_LINKSTAT="\"0.0.0.0\",";
+	/**
+	 * 返回当前网络连接状态,标识符开头：CONNECTION_
+	 * */
+	public int getConnectionState(){
+		this.LoadPPPoEInf();
+		if(this.getPPPoEInf()==null) return CONNECTION_OPERATION_EXCEPTION;
+		return Integer.parseInt(this.mPPPoEInf[26]);
+	}
+	
+	
 	/** 
 	 * 获取从远程计算机下载的HTML文本数据。需要一个输入流
 	 * */
@@ -244,7 +321,6 @@ public class Router {
 				sb.append((char) data);
 			}
 			ResponseHTML = sb.toString();
-			Log.log(ResponseHTML);
 		} catch (IOException e) {
 			Log.logE(e);
 		}
@@ -374,6 +450,7 @@ public class Router {
 
 	}
 	
+	
 	/** 
 	 * 跟踪PPPoE连接状态
 	 * */
@@ -381,42 +458,27 @@ public class Router {
 		boolean getData=true;
 		int count = 0;
 		while(getData){
-			if(++count==15) {
+			if(++count==20) {
 				getData=false;
 				this.setState("已尝试向路由器发送数据，但在超过时限后没有收到必须的信息，操作已经终止");
+				break;
 			};
 			try {
-				HttpURLConnection mHuc=getConnection("http://"+ip+"/userRpm/PPPoECfgRpm.htm");
-				if(setDialProperty(mHuc)!=0){
-					DataFrame.showTips("没有合适的连接方式，启动跟踪失败");
-				}else{
-					mHuc.connect();
-					String mContent=getHTMLContent(mHuc.getInputStream());
-					if(getResponseData(mContent, "正在连接")){
-						DataFrame.showTips("正在建立连接中");
-					}else if(getResponseData(mContent,"已连接")){
-						this.setState("已经建立连接");
-						getData=false;
-					}else if(getResponseData(mContent,"服务器") || getResponseData(mContent,"响应")){
-						this.setState("服务器没有响应，可能是拨号过于频繁而被服务器拒绝，请三分钟后重试");
-						getData=false;
-					}else if(getResponseData(mContent,"用户名") || getResponseData(mContent,"密码") || getResponseData(mContent,"错误")){
-						this.setState("远程服务器报告用户名或者密码错误（691）");
-						getData=false;
-					}
-					/*
-					 * else if(getResponseData(mContent,"")){
-						DataFrame.showTips("");
-						getData=false;
-					}
-					 * */
-				}
-			} catch (MalformedURLException ex) {
-				Log.logE(ex);
-				getData=false;
-			} catch (IOException ex) {
-				Log.logE(ex);
-				getData=false;
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				Log.logE(e);
+			}
+			switch(this.getConnectionState()){
+			case CONNECTION_AUTHENTICATION_FAILED:this.setState("验证失败，可能是你的用户名或密码错误");getData=false;break;
+			case CONNECTION_CONNECTING:this.setState("正在连接，请稍后");break;
+			case CONNECTION_NO_RESPONSE:this.setState("服务器没有响应");getData=false;break;
+			case CONNECTION_NOT_CONNECTED:this.setState("未连接，请执行拨号操作");getData=false;break;
+			case CONNECTION_NOT_CONNECTED_WAN:this.setState("WAN口未连接");getData=false;break;
+			case CONNECTION_OPERATION_EXCEPTION:this.setState("操作出现异常");getData=false;break;
+			case CONNECTION_OPERATION_NO_MODE:this.setState("没有可用方式连接到路由器");getData=false;break;
+			case CONNECTION_SUCCESS:this.setState("检测到路由器已连接到互联网");getData=false;break;
+			case CONNECTION_UNKNOWN:this.setState("未知错误");getData=false;break;
+			default:break;
 			}
 		}
 	}
@@ -441,7 +503,7 @@ public class Router {
 			HTML=this.getHTMLContent(tHuc.getInputStream());
 			String keyWord="var wlanPara=new Array(";
 			int tIndex=HTML.indexOf(keyWord);
-			if(tIndex>0){
+			if(tIndex>=0){
 				//获取第三个“，”的位置
 				tIndex+=keyWord.length();
 				for(int i=0;i<3;i++){
