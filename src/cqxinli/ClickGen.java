@@ -6,29 +6,21 @@ import javax.swing.JOptionPane;
 
 
 public class ClickGen implements ActionListener {
-
-	private FormPanel name;
-	private PasswordPanel gAccPwd;
-	private FormPanel gRouterIP;
+	
 	private RealUserFrame key;
-	public ClickGen(FormPanel name,RealUserFrame key,PasswordPanel gAccPwd,FormPanel gRouterIP){
-		this.name=name;
+	public ClickGen(RealUserFrame key){		
 		this.key=key;
-		this.gAccPwd=gAccPwd;
-		this.gRouterIP=gRouterIP;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(name.getValue().equals("")) {
-			JOptionPane.showMessageDialog(null, "您输入的用户名为空");
-		}else{
-			this.key.setUsername(name.getValue());
-			this.key.setUrlInfo(this.gRouterIP.getValue(), this.gAccPwd.getPassword());
-			this.key.showFrame();
-		}
-		
+			if(MainClass.getDataFrame().g_getAccName().equals("")) {
+				JOptionPane.showMessageDialog(null, "您输入的用户名为空");
+			}else{
+				this.key.setUsername(MainClass.getDataFrame().g_getAccName());
+				this.key.setUrlInfo(MainClass.getDataFrame().g_getRouterIP(), MainClass.getDataFrame().g_getAccPassword());
+				this.key.showFrame();
+			}
 	}
-	
-
 }
+

@@ -34,6 +34,10 @@ public class PasswordPanel extends JPanel{
 		add(jpf);
 	}
 	
+	public void setTooltipData(String txt){
+		this.jpf.setToolTipText(txt);
+	}
+	
 	public String getPassword(){
 		return new String(jpf.getPassword());
 	}

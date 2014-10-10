@@ -35,7 +35,7 @@ public class AdvanceFrame extends JFrame{
 	}
 	
 	private void initWindow(){
-		this.setLayout(new GridLayout(10,1));
+		this.setLayout(new GridLayout(12,1));
 		this.setResizable(false);
 		
 		JPanel pPanelDes_Info_1=new JPanel();
@@ -139,7 +139,7 @@ public class AdvanceFrame extends JFrame{
 		final PasswordPanel pPPWirelessPwd=new PasswordPanel("设置无线密码");
 		this.add(pPPWirelessPwd);
 		
-		JPanel pPanelRouterWirelessSetButton = new JPanel(new GridLayout(1,4));
+		JPanel pPanelRouterWirelessSetButton = new JPanel();
 		pPanelRouterWirelessSetButton.add(new JLabel("默认AES+WPA2/PSK"));
 		
 		final JCheckBox pHideSSID=new JCheckBox("隐藏SSID");
@@ -170,6 +170,28 @@ public class AdvanceFrame extends JFrame{
 		pPanelRouterWirelessSetButton.add(pButtonGetData);
 		
 		this.add(pPanelRouterWirelessSetButton);
+		
+		JPanel pPanelApplicationConfig=new JPanel();
+		pPanelApplicationConfig.add(new JLabel("应用程序设置"));
+		this.add(pPanelApplicationConfig);
+		
+		JPanel pPanelApplicationConfigButton=new JPanel();
+		
+		JButton pButGen=new JButton("生成加密账号");
+		RealUserFrame pRuf=new RealUserFrame();
+		pButGen.addActionListener(new ClickGen(pRuf));
+		
+		JButton pButInfo=new JButton("路由器当前信息");
+		pButInfo.setEnabled(false);
+		
+		JButton pButHelp=new JButton("帮助");
+		pButHelp.addActionListener(new ClickHelp());
+		
+		pPanelApplicationConfigButton.add(pButInfo);
+		pPanelApplicationConfigButton.add(pButGen);
+		pPanelApplicationConfigButton.add(pButHelp);
+		this.add(pPanelApplicationConfigButton);
+		
 	}
 	
 	

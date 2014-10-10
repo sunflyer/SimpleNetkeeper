@@ -1,122 +1,27 @@
 package cqxinli;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 
 import javax.swing.JOptionPane;
 
-/**
- * @version 1.1
- * @author CrazyChen@CQUT
- * 
- * 这是路由器设置的主要控制类。<br>
- * 控制过程：新建类-》初始化数据（路由器和用户信息）-》测试路由器连接-》设置数据是否已初始化<br>
- * 可完成的功能有：获取当前路由器SSID，获取当前路由器拨号状态，设置路由器拨号，设置路由器无线连接信息<br>
- * 可用构造方法：<br>
- * Router(String IP,String RouterAccName,String RouterAccPassword,String AccName,String AccPassword)<br>
- * 需求参数：IP地址，路由器管理员用户名，密码，宽带帐户名，密码<br>
- * Router()<br>
- * 这个无参构造会设置基本信息为空，并且使得数据状态为未初始化
- */
-public class Router {
-	private String ip;
-	private String username;
-	private String password;
-	private String dialer;
-	private String dialingPWD;
+public class Router extends RouterSet{
 	private CXKUsername un;
-	private int mAuthMethod;
-	private boolean mIsInit;
-	public static final int AUTH_OLD = 401;
-	public static final int AUTH_WEB = 402;
-	public static final int AUTH_NOT_AVALIABLE = 0;
-
+	
 	public Router(String ip, String username, String pswd, String dialer,
 			String dialingPWD) {
-		this.ip = ip;
-		this.username = username;
-		this.password = pswd;
-		this.dialer = dialer;
-		this.dialingPWD = dialingPWD;
-		this.un = new CXKUsername(this.dialer);
-		this.mIsInit = true;
-		this.mAuthMethod = Router.AUTH_NOT_AVALIABLE;
-		runCgi("http://" + this.ip, (this.username + ":" + this.password));
+		this(ip,username,pswd,dialer,dialingPWD,RouterSet.AUTH_NOT_AVALIABLE);
 	}
 
 	public Router(String ip, String username, String pswd, String dialer,
 			String dialingPWD,int authMethod) {
-			this.ip = ip;
-			this.username = username;
-			this.password = pswd;
-			this.dialer = dialer;
-			this.dialingPWD = dialingPWD;
-			this.un = new CXKUsername(this.dialer);
-			this.mIsInit = true;
-			this.mAuthMethod = authMethod;
-			if(authMethod==Router.AUTH_NOT_AVALIABLE) 
-				runCgi("http://" + this.ip, (this.username + ":" + this.password));
+			super(username,pswd,ip,dialer,dialingPWD,authMethod);
 	}
 	
-	public Router() {
-		this.mAuthMethod = Router.AUTH_NOT_AVALIABLE;
-		this.mIsInit = false;
-	}
-
-	public void setRouterData(String ip, String username, String pswd,
-			String dialer, String dialingPWD) {
-		this.ip = ip;
-		this.username = username;
-		this.password = pswd;
-		this.dialer = dialer;
-		this.dialingPWD = dialingPWD;
-		this.mIsInit = true;
-		runCgi("http://" + this.ip, this.username + ":" + this.password);
-	}
-
 	
-	public static final int RES_UNABLE_ACCESS=-2;
-	public static final int RES_UNABLE_ENCODE=-1;
-	public static final int RES_SUCCESS=0;
-	public static final int RES_IP_INVALID=1;
-	public static final int RES_NO_DIAL_MODE=2;
-	public static final int RES_NO_AUTHORITY=3;
-	public static final int RES_IO_EXCEPTION=4;
-	public static final int RES_NO_CONNECTION_OBJ=5;
-	public static final int RES_AUTHENTICATION_NO_METHED=6;
-	public static final int RES_META_DATA_NOT_INIT=7;
-	public static final int RES_ALGRITHOM_NOT_ALLOWED=8;
-	public static final int RES_REQUIRE_LOGIN=9;
-	public static final int RES_ERROR_UNKNOWN=10;
-	/**
-	 * @return The connection statement of the router you configured.<br>
-	 *         - -2 if unable to access the device with the account and password
-	 *         user given.<br>
-	 *         - -1 if unable to encode the username and password to URL
-	 *         Encoding<br>
-	 *         - 0 if configuration success.<br>
-	 *         - 2 if dialing mode is not pointed<br>
-	 *         - 1 if IP address is not valid<br>
-	 *         - 3 if the router returns that no authority to access this
-	 *         device.(Always caused by the ROM rejected the access even though
-	 *         your name and password is right)<br>
-	 *         - 4 if InputStream processing error (IOException Occurred)<br>
-	 *         - 5 if application can not get Connection Object<br>
-	 *         - 6 if no authentication method available<br>
-	 *         - 7 if Meta Data not initialized Correctly;<br>
-	 *         - 8 if the Algrithom for calculating truly account is not allowed<br>
-	 *         - 9 if the application detected another login request to complete
-	 *         this operation, or some routers limited this functions that
-	 *         permission denied.<br>
-	 *         - 10 if error Unknown
-	 */
 	public int connect() {
 		if(this.getConnectionState()==CONNECTION_SUCCESS){
 			return RES_SUCCESS;
@@ -130,7 +35,7 @@ public class Router {
 					// 替换出现的+为空格，否则用户名错误。
 					encodeName = URLEncoder.encode(un.Realusername(), "UTF-8")
 							.replace("+", "%2D");
-					encodePassword = URLEncoder.encode(this.dialingPWD, "UTF-8");
+					encodePassword = URLEncoder.encode(this.gAccPassword, "UTF-8");
 				} catch (Exception ex) {
 					Log.logE(ex);
 					return Router.RES_UNABLE_ENCODE;
@@ -138,8 +43,8 @@ public class Router {
 			}else{
 				Log.log("检测到连接模式为《家用模式》");
 				try {
-					encodeName=URLEncoder.encode(this.dialer,"UTF-8").replace("+", "%2D");
-					encodePassword=URLEncoder.encode(this.dialingPWD,"UTF-8");
+					encodeName=URLEncoder.encode(this.gAccName,"UTF-8").replace("+", "%2D");
+					encodePassword=URLEncoder.encode(this.gAccPassword,"UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					Log.logE(e);
 				}
@@ -152,7 +57,7 @@ public class Router {
 			switch(MainClass.getDialType()){
 			case MainClass.DIAL_AUTO:
 				URL="http://"
-						+ this.ip
+						+ this.gRouterIP
 						+ "/userRpm/PPPoECfgRpm.htm?wan=0&wantype=2&acc="
 						+ encodeName
 						+ "&psw="
@@ -163,7 +68,7 @@ public class Router {
 				;break;
 			case MainClass.DIAL_BY_USER:
 				URL="http://"
-						+ this.ip
+						+ this.gRouterIP
 						+ "/userRpm/PPPoECfgRpm.htm?wan=0&wantype=2&acc="
 						+ encodeName
 						+ "&psw="
@@ -200,64 +105,12 @@ public class Router {
 		return this.mIsInit ? Router.RES_UNABLE_ACCESS : Router.RES_META_DATA_NOT_INIT;
 	}
 
-	
-	/**
-	 * 设置HttpURLConnection对象的请求属性
-	 * 包括引用（Referer），超时（默认2000）
-	 * */
-	private void setProperties(HttpURLConnection Tarhuc) {
-		this.setProperties(Tarhuc, 200);
-	}
-	
-	private void setProperties(HttpURLConnection Tarhuc,int timeOut){
-		// 设置引用页避免权限错误
-				Tarhuc.setRequestProperty("Referer", "http://" + this.ip + "/");
-				Tarhuc.setRequestProperty("Host", this.ip);
-				Tarhuc.setRequestProperty("Connection", "Keep-alive");
-				Tarhuc.setRequestProperty("Content-Length", "0");
-				Tarhuc.setRequestProperty("Content-Type",
-						"application/x-www-form-urlencoded");
-				Tarhuc.setConnectTimeout(timeOut);
-				Log.log("相关属性已经设置完毕");
-	}
 
-	
-	/** 
-	 * 返回一个连接状态，在Connect方法之后使用
-	 * */
-	private int getResponse(InputStream is, String URL) {
-		String ResponseHTML=this.getHTMLContent(is);
-		if (ResponseHTML
-				.indexOf("You have no authority to access this device!") >= 0) {
-			Log.log("检测到关键字：无授权访问");
-			return Router.RES_NO_AUTHORITY;
-		} else if (ResponseHTML.indexOf("noframe") >= 0
-				|| ResponseHTML.indexOf("已连接") >= 0
-				|| ResponseHTML.indexOf("PPPoECfgRpm.htm") >= 0) {
-			return Router.RES_SUCCESS;
-		} else if (ResponseHTML.indexOf("loginBox") >= 0) {
-			Log.log("检测到额外登陆操作");
-			new FormTips(URL);
-		}
-		return Router.RES_REQUIRE_LOGIN;
-	}
-	
-	
-	public static final String[] PPPoELinkStat={
-		"未连接",
-		"已连接",
-		"正在连接",
-		"用户名或密码验证失败",
-		"服务器无响应",
-		"未知原因失败",
-		"WAN口未连接"
-	};
-	
 	private String[] mPPPoEInf;
 	
 	public void LoadPPPoEInf(){
 		try {
-			HttpURLConnection pCon=this.getConnection("http://"+this.ip+"/userRpm/PPPoECfgRpm.htm");
+			HttpURLConnection pCon=this.getConnection("http://"+this.gRouterIP+"/userRpm/PPPoECfgRpm.htm");
 			if(this.setDialProperty(pCon)!=0) return;
 			pCon.connect();
 			String HTML=this.getHTMLContent(pCon.getInputStream());
@@ -266,7 +119,7 @@ public class Router {
 			if(pIndex>=0){
 				int eIndex=HTML.indexOf(");", pIndex);
 				if(eIndex>pIndex){
-					this.mPPPoEInf=HTML.substring(pIndex+KeyWord2.length(),eIndex).split(",");
+					this.mPPPoEInf=HTML.substring(pIndex+KeyWord2.length(),eIndex).split(",\n");
 					this.TrimPPPoEInf();
 					Log.log("已经检测到数组内容。长度为"+this.mPPPoEInf.length);
 				}
@@ -287,17 +140,6 @@ public class Router {
 		return this.mPPPoEInf;
 	}
 	
-	public static final int CONNECTION_NOT_CONNECTED=0;
-	public static final int CONNECTION_SUCCESS=1;
-	public static final int CONNECTION_NO_RESPONSE=4;
-	public static final int CONNECTION_AUTHENTICATION_FAILED=3;
-	public static final int CONNECTION_UNKNOWN=5;
-	public static final int CONNECTION_NOT_CONNECTED_WAN=6;
-	public static final int CONNECTION_OPERATION_NO_MODE=10;
-	public static final int CONNECTION_OPERATION_EXCEPTION=11;
-	public static final int CONNECTION_CONNECTING=2;
-	
-	public static final String CONNECTION_VAR_LINKSTAT="\"0.0.0.0\",";
 	/**
 	 * 返回当前网络连接状态,标识符开头：CONNECTION_
 	 * */
@@ -308,91 +150,27 @@ public class Router {
 	}
 	
 	
-	/** 
-	 * 获取从远程计算机下载的HTML文本数据。需要一个输入流
-	 * */
-	private String getHTMLContent(InputStream is){
-		int data = 0;
-		String ResponseHTML = null;
-		try {
-			BufferedReader pBufRd=new BufferedReader(new InputStreamReader(is,MainClass.getRouterPageEncode()));
-			StringBuffer sb = new StringBuffer();
-			while ((data = pBufRd.read()) != -1) {
-				sb.append((char) data);
-			}
-			ResponseHTML = sb.toString();
-		} catch (IOException e) {
-			Log.logE(e);
-		}
-		return ResponseHTML;
-	}
-
-	/**
-	 * <p>
-	 * 初始化路由器可连接情况。
-	 * </p>
-	 * <p>
-	 * Initial whether the router is available to be operated.
-	 * </p>
-	 * <p>
-	 * 路由器的验证方式：输入用户名和密码以后，调用本地JS进行BASE64加密，加密内容为
-	 * Base64.Encode(用户名:密码)，然后设置COOKIE，刷新本地页面。<br>
-	 * 由于刷新时自动提交COOKIE，因此可以将 验证任务放在客户端处理
-	 * </p>
-	 * <p>
-	 * The authorization method for router:after user input the user name and
-	 * password,the login page use local JavaScript method to encrypt these info
-	 * with Base64<br>
-	 * and set cookie.The Content encrypted is Base64(username:password),and
-	 * then refresh local page.<br>
-	 * Due to the cookie is uploaded automatically,the authorization can be
-	 * simply processed by client
-	 * </p>
-	 * 
-	 * @param urlStr
-	 *            : The remote address to configure.
-	 * @param authorizationStr
-	 *            : Username and password (for access network)
-	 */
-	private void runCgi(String urlStr, String authorizationStr) {
+	protected void testLink() {
 		if (this.mIsInit) {
 			Log.log("正在尝试以新版本固件的方式处理操作数据");
 			HttpURLConnection xHuc = null;
 			try {
-					xHuc = this.getConnection(urlStr);
+					xHuc = this.getConnection("http://"+this.gRouterIP);
 					if (xHuc != null) {
-						if (!"".equals(authorizationStr)) {
-							// 设置路由器的COOKIE验证
-							xHuc.setRequestProperty(
-									"Cookie",
-									"Authorization=Basic "
-											+ Base64.encode(authorizationStr));
-						}
+						xHuc.setRequestProperty(
+								"Cookie",
+								"Authorization="+ this.getBase64Acc());
 						Log.log("开始尝试第一次连接");
 						xHuc.connect();
-						InputStream in = xHuc.getInputStream();
-						int chint = 0;
-						StringBuffer sb = new StringBuffer();
-						while ((chint = in.read()) != -1) {
-							sb.append((char) chint);
-						}
-						String html = sb.toString();
+						String HTML=this.getHTMLContent(xHuc.getInputStream());
 						Log.log("检查是否可用");
-						// 设置可用 如果检测到登陆成功后的框架代码
-						// set it available if detected keyword that appear in
-						// the
-						// page which means login success.
-						if (html.indexOf("noframe") > 0
-								|| html.indexOf("frame") >= 0) {
+						if (HTML.indexOf("noframe") > 0
+								|| HTML.indexOf("frame") >= 0) {
 							this.changeAuthMethod(AUTH_WEB);
 						} else {
 							// 尝试旧版本
 							this.changeInitState(false);
 						}
-						// DEBUG用，输出调试数据
-						Log.log(this.mAuthMethod + Log.nLine + "Basic "
-								+ Base64.encode(authorizationStr) + Log.nLine
-								+ html);
 					}
 			} catch (MalformedURLException e) {
 				this.changeInitState(false);
@@ -400,43 +178,24 @@ public class Router {
 			} catch (IOException e) {
 				this.changeInitState(false);
 				Log.logE(e);
-				this.detectOld(urlStr, authorizationStr);
+				this.detectOld();
 			}
 		} else {
 			this.changeAuthMethod(Router.AUTH_NOT_AVALIABLE);
 		}
 	}
 
-	private void changeInitState(boolean ii) {
-		this.mIsInit = ii;
-		Log.log("已经更改路由器连接初始化状态为：" + (ii ? "已初始化" : "未初始化"));
-		if (!ii)
-			changeAuthMethod(Router.AUTH_NOT_AVALIABLE);
-	}
+	
 
-	private void changeAuthMethod(int Au) {
-		this.mAuthMethod = Au;
-		MainClass.setAuthMethod(Au);
-		Log.log("已更改路由器验证方式为：" + Au);
-		if(Au!=Router.AUTH_NOT_AVALIABLE) 
-			this.changeInitState(true);
-	}
-
-	private void detectOld(String URL, String auth) {
+	protected void detectOld() {
 		try {
 			Log.log("尝试以旧版本的方式检测可用性");
-			HttpURLConnection pHuc = this.getConnection(URL);
-
-			pHuc.setRequestProperty("Authorization",
-					"Basic " + Base64.encode(auth));
+			HttpURLConnection pHuc = this.getConnection("http://"+this.gRouterIP);
+			pHuc.setRequestProperty(
+					"Authorization",
+					this.getBase64Acc());		
 			pHuc.connect();
-			InputStream in = pHuc.getInputStream();
-			StringBuffer sb = new StringBuffer();
-			int chint;
-			while ((chint = in.read()) != -1) {
-				sb.append((char) chint);
-			}
-			String html = sb.toString();
+			String html=this.getHTMLContent(pHuc.getInputStream());
 			if (html.indexOf("noframe") > 0 || html.indexOf("frame") >= 0){
 				this.changeAuthMethod(Router.AUTH_OLD);
 			}
@@ -450,10 +209,6 @@ public class Router {
 
 	}
 	
-	
-	/** 
-	 * 跟踪PPPoE连接状态
-	 * */
 	public void trackLink(){
 		boolean getData=true;
 		int count = 0;
@@ -469,58 +224,182 @@ public class Router {
 				Log.logE(e);
 			}
 			switch(this.getConnectionState()){
-			case CONNECTION_AUTHENTICATION_FAILED:this.setState("验证失败，可能是你的用户名或密码错误");getData=false;break;
-			case CONNECTION_CONNECTING:this.setState("正在连接，请稍后");break;
-			case CONNECTION_NO_RESPONSE:this.setState("服务器没有响应");getData=false;break;
-			case CONNECTION_NOT_CONNECTED:this.setState("未连接，请执行拨号操作");getData=false;break;
-			case CONNECTION_NOT_CONNECTED_WAN:this.setState("WAN口未连接");getData=false;break;
-			case CONNECTION_OPERATION_EXCEPTION:this.setState("操作出现异常");getData=false;break;
-			case CONNECTION_OPERATION_NO_MODE:this.setState("没有可用方式连接到路由器");getData=false;break;
-			case CONNECTION_SUCCESS:this.setState("检测到路由器已连接到互联网");getData=false;break;
-			case CONNECTION_UNKNOWN:this.setState("未知错误");getData=false;break;
+			case CONNECTION_AUTHENTICATION_FAILED:this.setState("路由器状态：验证失败，用户名或密码错误");getData=false;break;
+			case CONNECTION_CONNECTING:this.setState("路由器状态：正在连接...(尝试跟踪次数："+count+"/20)");break;
+			case CONNECTION_NO_RESPONSE:this.setState("路由器状态：服务器没有响应(请尝试检查你的路由器连线，或重启路由器)");getData=false;break;
+			case CONNECTION_NOT_CONNECTED:this.setState("路由器状态：未连接");getData=false;break;
+			case CONNECTION_NOT_CONNECTED_WAN:this.setState("路由器状态：WAN口未连接");getData=false;break;
+			case CONNECTION_OPERATION_EXCEPTION:this.setState("路由器状态：操作出现异常");getData=false;break;
+			case CONNECTION_OPERATION_NO_MODE:this.setState("路由器状态：没有可用方式连接到路由器");getData=false;break;
+			case CONNECTION_SUCCESS:this.setState("路由器状态：路由器已连接到网络");getData=false;break;
+			case CONNECTION_UNKNOWN:this.setState("路由器状态：发生未知错误");getData=false;break;
 			default:break;
 			}
 		}
 	}
 	
-	private void setState(String r){
-		DataFrame.showTips(r);
-		Log.log(r);
+	
+	/**
+	 * WLAN基本信息，其中<br>
+	 * 0-无线状态（启用与否，1-启用）<br>
+	 * 1-WIFI的SSID<br>
+	 * 2-无线信道<br>
+	 * 3-无线模式<br>
+	 * 4-无线的MAC<br>
+	 * 5-当前主机IP<br>
+	 * 6-无线频段带宽<br>
+	 * 7-<br>
+	 * 8-<br>
+	 * 9-<br>
+	 * 10-WDDS状态
+	 * */
+	private String[] gLinkInfoIndexWlan;
+	
+	/**
+	 * WAN口信息，其中
+	 * 1-WAN的MAC地址
+	 * 2-WAN口IP地址
+	 * 3-
+	 * 4-子网掩码
+	 * 5-
+	 * 6-
+	 * 7-网关IP
+	 * 11-DNS
+	 * 12-已连接时间
+	 * 13-连接状态（0-未连接 1-已连接 2-正在连接 3-用户名/密码错误 4-无响应 5-未知原因 6-WAN未连接 ）
+	 * */
+	private String[] gLinkInfoIndexWan;
+	
+	/**
+	 * 加载当前状态信息，来自路由器状态页面
+	 * */
+	public void LoadLinkInfo(){
+		try{
+			HttpURLConnection tHuc=this.getConnection("http://"+this.gRouterIP+"/userRpm/StatusRpm.htm");
+			if(this.setDialProperty(tHuc)!=0) Log.log("加载 首页全部信息 出现错误，无法设置属性");
+			else{
+				tHuc.connect();
+				String HTML=this.getHTMLContent(tHuc.getInputStream());
+				String Keyword="var wlanPara=new Array(";
+				int tIndex=HTML.indexOf(Keyword);
+				if(tIndex>0){
+					int tEnd=HTML.indexOf(");", tIndex);
+					if(tEnd>tIndex){
+						String tArray=HTML.substring(tIndex+Keyword.length(),tEnd);
+						this.gLinkInfoIndexWlan=tArray.split(",\n");
+						Router.trimString(gLinkInfoIndexWlan);
+					}
+				}
+				String KeywordWAN="var wanPara=new Array(";
+				tIndex=HTML.indexOf(KeywordWAN);
+				if(tIndex>0){
+					int tEnd=HTML.indexOf(":)",tIndex);
+					if(tEnd>tIndex){
+						String tArray=HTML.substring(tIndex, tEnd);
+						this.gLinkInfoIndexWan=tArray.split(",\n");
+						Router.trimString(gLinkInfoIndexWan);
+					}
+				}
+			}
+		}catch(IOException e){
+			Log.logE(e);
+		}
 	}
+	
+	
+	/**
+	 * WLAN基本信息，其中<br>
+	 * 0-无线状态（启用与否，1-启用）<br>
+	 * 1-WIFI的SSID<br>
+	 * 2-无线信道<br>
+	 * 3-无线模式<br>
+	 * 4-无线的MAC<br>
+	 * 5-当前主机IP<br>
+	 * 6-无线频段带宽<br>
+	 * 7-<br>
+	 * 8-<br>
+	 * 9-<br>
+	 * 10-WDDS状态
+	 * */
+	public String[] getLinkInfoWlan(){
+		return this.gLinkInfoIndexWlan;
+	}
+	
+	/**
+	 * WAN口信息，其中
+	 * 1-WAN的MAC地址
+	 * 2-WAN口IP地址
+	 * 3-
+	 * 4-子网掩码
+	 * 5-
+	 * 6-
+	 * 7-网关IP
+	 * 11-DNS
+	 * 12-已连接时间
+	 * 13-连接状态（0-未连接 1-已连接 2-正在连接 3-用户名/密码错误 4-无响应 5-未知原因 6-WAN未连接 ）
+	 * */
+	public String[] getLinkInfoWan(){
+		return this.gLinkInfoIndexWan;
+	}
+	
+	private String[] gWlanInfoKey;
+	
+	
+	/**
+	 * 加载无线路由器信息，来自无线安全页面
+	 * */
+	public void LoadWlanInfoKey(){
+		try {
+			HttpURLConnection tHuc=this.getConnection("http://"+this.gRouterIP+"/userRpm/WlanSecurityRpm.htm");
+			if(this.setDialProperty(tHuc)!=0) Log.log("加载 WLAN 信息出现错误，无法设置验证属性");
+			else{
+				tHuc.connect();
+				String HTML=this.getHTMLContent(tHuc.getInputStream());
+				String Keyword="var wlanPara=new Array(";
+				int tIndex=HTML.indexOf(Keyword);
+				if(tIndex>0){
+					int tEnd=HTML.indexOf(");", tIndex);
+					if(tEnd>tIndex){
+						String tArray=HTML.substring(tIndex+Keyword.length(),tEnd);
+						this.gWlanInfoKey=tArray.split(",\n");
+						Router.trimString(gWlanInfoKey);
+					}
+				}
+			}
+		} catch (IOException e) {
+			Log.logE(e);
+		}
+	}
+	
+	public String[] getWlanInfoKey(){
+		return this.gWlanInfoKey;
+	}
+	
+	public String getWifiPassword(){
+		if(this.gWlanInfoKey!=null && this.gWlanInfoKey.length>12){
+			return this.gWlanInfoKey[9];
+		}else{
+			this.LoadWlanInfoKey();
+			return (this.gWlanInfoKey!=null && this.gWlanInfoKey.length>12)?this.gWlanInfoKey[9]:null;
+		}
+	}
+	
 	
 	/** 
 	 * 获取当前WIFI信息，包括WIFI热点名称，热点密码
 	 * */
 	public WiFiInfo getWifiState(){
 		WiFiInfo tWi=null;
+		this.LoadLinkInfo();
+		this.LoadWlanInfoKey();
+		
 		String SSID=null;
-		String HTML=null;
-		try {
-			//先获取WIFI名称
-			HttpURLConnection tHuc=this.getConnection("http://"+this.ip+"/userRpm/WlanNetworkRpm.htm");
-			if(this.setDialProperty(tHuc)!=0) return null;
-			tHuc.connect();
-			HTML=this.getHTMLContent(tHuc.getInputStream());
-			String keyWord="var wlanPara=new Array(";
-			int tIndex=HTML.indexOf(keyWord);
-			if(tIndex>=0){
-				//获取第三个“，”的位置
-				tIndex+=keyWord.length();
-				for(int i=0;i<3;i++){
-					tIndex=HTML.indexOf(",",tIndex);
-				}
-				//第四个
-				int fourthIndex=tIndex+HTML.indexOf(",",tIndex);
-				SSID=HTML.substring(tIndex, fourthIndex).replace("\"", "");
-				String[] tmp=SSID.split(",");
-				SSID=tmp[3].trim();
-				
-				tWi=new WiFiInfo(SSID,"",false);
-			}
-		} catch (IOException e) {
-			Log.logE(e);
-			Log.log(HTML);
-		}
+		String Password=null;
+		
+		SSID=this.gLinkInfoIndexWlan[1];
+		Password=this.getWifiPassword();
+		tWi=new WiFiInfo(SSID,Password);
+		
 		return tWi;
 	}
 	
@@ -532,18 +411,12 @@ public class Router {
 	private static final String PAGE_VAR_HIDESSID="%HIDESSID";
 	private static final String PAGE_VAR_HIDESSID_DATA="&broadcast=2";
 	
-	public static final int SET_SUCCESS=0;
-	public static final int SET_DATA_ERROR=1;
-	public static final int SET_NO_DIAL_MODE=2;
-	/** 
-	 * 设置无线网络连接信息，SSID，密码以及是否隐藏你的无线网络<br>
-	 * 参数 WiFiInfo
-	 * */
+	
 	public void setWifiState(WiFiInfo pW){
 		//密码配置地址：http://172.16.17.1/userRpm/WlanSecurityRpm.htm?
-		//secType=3&pskSecOpt=2&pskCipher=3&pskSecret=CYXnetkeeperA617&interval=1800
+		//secType=3&pskSecOpt=2&pskCipher=3&pskSecret=<password>&interval=1800
 		//&Save=%B1%A3+%B4%E6
-		String tConfigPassword=Router.PAGE_CONFIG_WLAN_SEC.replace(PAGE_VAR_IP, this.ip).replace(PAGE_VAR_KEY, pW.getWifiPassword());
+		String tConfigPassword=Router.PAGE_CONFIG_WLAN_SEC.replace(PAGE_VAR_IP, this.gRouterIP).replace(PAGE_VAR_KEY, pW.getWifiPassword());
 		try {
 			HttpURLConnection tConfigPwdHuc=this.getConnection(tConfigPassword);
 			if(this.setDialProperty(tConfigPwdHuc)!=0) return;
@@ -563,10 +436,10 @@ public class Router {
 			Log.logE(e1);
 		}
 		//SSID：http://172.16.17.1/userRpm/WlanNetworkRpm.htm?
-		//ssid1=ChenYX&wlMode=2&channel=0&mode=5&chanWidth=2&ap=1&brlssid=
+		//ssid1=<ssid>&wlMode=2&channel=0&mode=5&chanWidth=2&ap=1&brlssid=
 		//&brlbssid=&detctwds=1&keytype=1&we
 		//pindex=1&keytext=&broadcast=2&Save=%B1%A3+%B4%E6
-		String tConfigSSID=Router.PAGE_CONFIG_WLAN_NETWORK.replace(PAGE_VAR_IP, this.ip).replace(PAGE_VAR_SSID, pW.getWifiName()).replace(PAGE_VAR_HIDESSID, pW.isWifiBroadCast()?"":PAGE_VAR_HIDESSID_DATA);
+		String tConfigSSID=Router.PAGE_CONFIG_WLAN_NETWORK.replace(PAGE_VAR_IP, this.gRouterIP).replace(PAGE_VAR_SSID, pW.getWifiName()).replace(PAGE_VAR_HIDESSID, pW.isWifiBroadCast()?"":PAGE_VAR_HIDESSID_DATA);
 		try {
 			HttpURLConnection tConfigSSIDHuc=this.getConnection(tConfigSSID);
 			if(this.setDialProperty(tConfigSSIDHuc)!=0) return;
@@ -582,33 +455,9 @@ public class Router {
 			Log.logE(e);
 		}
 	}
-	
-	private boolean  getResponseData(InputStream is,String Data){
-		return this.getResponseData(this.getHTMLContent(is), Data);
-	}
-	
-	private boolean getResponseData(String meta,String data){
-		return meta.indexOf(data)>=0;
-	}
-	
-	/** 
-	 * Returns a HttpURLConnection Object,Requires a valid URL for generating.<br/>
-	 * This operation will set properties at the same time<br/>
-	 * 返回一个HttpURLConnection对象，需要一个合法的URL。同时会设置一些属性，但不包括验证字符串
-	 * */
-	private HttpURLConnection getConnection(String URL) throws MalformedURLException, IOException{
-		HttpURLConnection tHuc=(HttpURLConnection)(new URL(URL).openConnection());
-		if(tHuc!=null){
-			this.setProperties(tHuc);
-		}
-		return tHuc;
-	}
-	
-	
-	/** 
-	 * 设置验证属性，如果设置失败，会返回非0值。
-	 * */
-	private int setDialProperty(HttpURLConnection mRouterUrlCon){
+
+	@Override
+	protected int setDialProperty(HttpURLConnection mRouterUrlCon) {
 		switch(this.mAuthMethod){
 		case Router.AUTH_OLD:mRouterUrlCon.setRequestProperty(
 				"Authorization",this.getBase64Acc());return 0;
@@ -620,11 +469,5 @@ public class Router {
 		
 	}
 	
-	/** 
-	 * 获取路由器验证字符串
-	 * */
-	private String getBase64Acc(){
-		return "Basic "+Base64.encode(this.username + ":"
-											+ this.password);
-	}
+
 }

@@ -6,21 +6,13 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
+//import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 public class ClickHelp implements ActionListener{
-
-	protected FormPanel ip;
-	protected FormPanel admin;
-	protected PasswordPanel pwd;
 	
-	public ClickHelp(FormPanel ip,FormPanel admin,PasswordPanel pwd){
-		this.ip=ip;
-		this.admin=admin;
-		this.pwd=pwd;
-	}
+	public ClickHelp(){}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -67,6 +59,8 @@ public class ClickHelp implements ActionListener{
 			sb.append("本软件作为免费软件，不得销售此软件以及此软件的修改或/和衍生版本，否则追究责任。");
 			jta.setText(sb.toString());
 			add(jta,BorderLayout.NORTH);
+			
+			/*
 			JButton debug=new JButton("Debug");
 			debug.addActionListener(new ClickDebug(ip,admin,pwd));
 			if(MainClass.getVersionSig()==MainClass.VER_DEBUG || MainClass.getVersionSig()==MainClass.VER_BETA || MainClass.isDebugAllow()) {
@@ -77,7 +71,10 @@ public class ClickHelp implements ActionListener{
 				debug.setText("Debug(仅在调试/测试版本或高级模式下开放)");
 			}				
 			add(debug,BorderLayout.SOUTH);
+			
+			*/
 			this.setSize(650, 545);
+			
 			this.setVisible(true);
 		}
 	}

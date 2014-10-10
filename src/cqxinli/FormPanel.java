@@ -35,6 +35,10 @@ public class FormPanel extends JPanel{
 		add(jtf);
 	}
 	
+	public void setTooltipData(String tooltip){
+		this.jtf.setToolTipText(tooltip);
+	}
+	
 	public String getValue(){
 		return this.jtf.getText();
 	}

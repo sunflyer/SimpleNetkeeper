@@ -9,11 +9,11 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 public class MainClass {
-	public static final String __g_ver_Build="0025";
-	public static final String BUILD_DATE="2014-10-01 23:28";
+	public static final String __g_ver_Build="0027";
+	public static final String BUILD_DATE="2014-10-10 23:50";
 	public static final int __g_ver_MainVer=1;
 	public static final int __g_ver_SubVer=1;
-	public static final int __g_ver_FixVer=1;
+	public static final int __g_ver_FixVer=2;
 	public static final String __g_data_file_name="NetkeeperForRouter.ini";
 	
 	public static final int VER_REL=0;
@@ -156,19 +156,27 @@ public class MainClass {
 	public static final String Config_Application_ConfVer="ConfigVersion";
 	public static final String Config_Application_CurrentVersion="3";
 	
+	//User Interface
+	private static DataFrame gDataFrame=null;
+	
+	public static DataFrame getDataFrame(){
+		return MainClass.gDataFrame;
+	}
+	
+	
 	//读取并设置用户数据
-	public static void setUserData(FormPanel name,PasswordPanel pwd,FormPanel ip,FormPanel adminName,PasswordPanel adminPswd){
+	public static void setUserData(){
 		File f=new File(System.getProperty("user.dir")+File.separator+__g_data_file_name);
 		if(f.exists()){
 			Properties pro=new Properties();
 			try{
 				pro.load(new FileInputStream(System.getProperty("user.dir")+File.separator+__g_data_file_name));
 				
-				name.setValue(pro.getProperty(MainClass.Config_Acc_Name));
-				pwd.setPassword(Base64.decode(pro.getProperty(MainClass.Config_Acc_Password)));
-				ip.setValue(pro.getProperty(MainClass.Config_Router_IP));
-				adminName.setValue(Base64.decode(pro.getProperty(MainClass.Config_Router_Name)));
-				adminPswd.setPassword(Base64.decode(pro.getProperty(MainClass.Config_Router_Password)));
+				MainClass.getDataFrame().setAccName(pro.getProperty(MainClass.Config_Acc_Name));
+				MainClass.getDataFrame().setAccPassword(Base64.decode(pro.getProperty(MainClass.Config_Acc_Password)));
+				MainClass.getDataFrame().setRouterIpAddress(pro.getProperty(MainClass.Config_Router_IP));
+				MainClass.getDataFrame().setRouterAccName(Base64.decode(pro.getProperty(MainClass.Config_Router_Name)));
+				MainClass.getDataFrame().setRouterAccPassword(Base64.decode(pro.getProperty(MainClass.Config_Router_Password)));
 				MainClass.setAuthMethod(Integer.parseInt(pro.getProperty(MainClass.Config_Router_AuthMethod)));
 				Log.log("通过读取配置文件取得的基本拨号方式为："+pro.getProperty(MainClass.Config_Router_AuthMethod));
 				
@@ -203,7 +211,12 @@ public class MainClass {
 	}
 	
 	//保存用户数据
-	public static void saveUserData(String name,String pwd,String ip,String adminName,String adminPswd){
+	public static void saveUserData(){
+		String name=MainClass.getDataFrame().g_getAccName();
+		String pwd=MainClass.getDataFrame().g_getAccPassword();
+		String ip=MainClass.getDataFrame().g_getRouterIP();
+		String adminName=MainClass.getDataFrame().g_getRouterAdmin();
+		String adminPswd=MainClass.getDataFrame().g_getRouterPassword();
 		Properties pro=new Properties();
 		try{
 			File f=new File(System.getProperty("user.dir")+File.separator+__g_data_file_name);
@@ -242,17 +255,24 @@ public class MainClass {
 		}	
 		
 		Log.log("应用程序版本为"+MainClass.getVersion());
-		DataFrame pDF=new DataFrame("Netkeeper For Router");
+		MainClass.gDataFrame=new DataFrame("Netkeeper For Router");
+		MainClass.setUserData();
 		
 		if(pGetState){			
-			Router pRouter=new Router(pDF.g_getRouterIP(),pDF.g_getRouterAdmin(),pDF.g_getRouterPassword(),pDF.g_getAccName(),pDF.g_getAccPassword());
+			Router pRouter=new Router(gDataFrame.g_getRouterIP(),gDataFrame.g_getRouterAdmin(),gDataFrame.g_getRouterPassword(),gDataFrame.g_getAccName(),gDataFrame.g_getAccPassword());
 			pRouter.LoadPPPoEInf();
 			String[] inf=pRouter.getPPPoEInf();
-			for(String x:inf){
-				System.out.println(x);
+			if(inf!=null){
+				for(String x:inf){
+					System.out.println(x);
+				}
+				System.out.println("长度为"+inf.length);
+				System.out.println("The PPPoE Inf in index 26th is "+inf[26]);
+				pRouter.trackLink();
 			}
-			System.out.println("The PPPoE Inf in index 26th is"+inf[26]);
-			pRouter.trackLink();
+			else{
+				DataFrame.showTips("跟踪当前连接情况出现错误");
+			}
 		}
 		
 		String tConfirmData="您应当为本软件的使用以及行为受到约束，在同意以下条件的情况下，您可以免费使用、"
@@ -263,8 +283,8 @@ public class MainClass {
 				+ "4.你在此确认并同意，如果你违反了以上规则，软件的原作者有权利要求你停止违规行为。\n\n"
 				+ "如果你同意以上约束，请点击“是”继续操作，否则请退出。";
 		if(!new File(System.getProperty("user.dir")+File.separator+__g_data_file_name).exists()){
-			if(JOptionPane.showConfirmDialog(pDF, tConfirmData)==JOptionPane.YES_OPTION){
-				JOptionPane.showMessageDialog(pDF, "欢迎使用Netkeeper For Router（重庆高校版本）\n使用方式请参见ReadMe文档\n如果您在使用过程中遇到任何问题，请将文件夹内的NetkeeperLog.Log发送到 cx@itncre.com\n非常感谢！\n\n隐私声明：\n本软件的源代码已公布在GitHub,使用过程中不会发送任何隐私信息给任何人，敬请留意！");
+			if(JOptionPane.showConfirmDialog(gDataFrame, tConfirmData)==JOptionPane.YES_OPTION){
+				JOptionPane.showMessageDialog(gDataFrame, "欢迎使用Netkeeper For Router（重庆高校版本）\n使用方式请参见ReadMe文档\n如果您在使用过程中遇到任何问题，请将文件夹内的NetkeeperLog.Log发送到 cx@itncre.com\n非常感谢！\n\n隐私声明：\n本软件的源代码已公布在GitHub,使用过程中不会发送任何隐私信息给任何人，敬请留意！");
 			}else{
 				System.exit(0);
 			}

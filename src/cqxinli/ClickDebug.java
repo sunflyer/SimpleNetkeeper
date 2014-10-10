@@ -37,6 +37,7 @@ public class ClickDebug implements ActionListener{
 	                    if (!"".equals(admin.getValue()+":"+pwd.getPassword())) {    
 	                    	//设置路由器的COOKIE验证
 	                        xHuc.setRequestProperty("Cookie", "Authorization=Basic "+Base64.encode(admin.getValue()+":"+pwd.getPassword()));
+	                        System.out.print("Authorization=Basic "+Base64.encode(admin.getValue()+":"+pwd.getPassword()));
 	                    }                         
 	                    xHuc.setRequestProperty("Content-Length", "0");    
 	                    xHuc.setRequestProperty("Content-Type",    
