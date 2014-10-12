@@ -27,6 +27,7 @@ public class Router extends RouterSet{
 			return RES_SUCCESS;
 		}
 		if (this.mAuthMethod != Router.AUTH_NOT_AVALIABLE && this.mIsInit) {
+			if(this.un==null) this.un=new CXKUsername(this.gAccName);
 			String encodeName = null;
 			String encodePassword = null;
 			if(MainClass.getEncrytedAcc()){
@@ -37,6 +38,7 @@ public class Router extends RouterSet{
 							.replace("+", "%2D");
 					encodePassword = URLEncoder.encode(this.gAccPassword, "UTF-8");
 				} catch (Exception ex) {
+					Log.log(un==null?"true":"false");
 					Log.logE(ex);
 					return Router.RES_UNABLE_ENCODE;
 				}
