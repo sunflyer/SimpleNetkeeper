@@ -31,6 +31,7 @@ public abstract class RouterSet {
 	
 	public static final int AUTH_OLD = 401;
 	public static final int AUTH_WEB = 402;
+	public static final int AUTH_PASSWORD_ONLY=403;
 	public static final int AUTH_NOT_AVALIABLE = 0;
 	
 	protected RouterSet(String RouterID,String RouterKey,String IP,String AccName,String AccPassword){
@@ -310,4 +311,15 @@ public abstract class RouterSet {
 		}
 	}
 	
+	protected boolean writePostParam(HttpURLConnection thuc,String param){
+		try {
+			thuc.setRequestMethod("POST");
+			thuc.setDoOutput(true);// 是否输入参数
+			thuc.getOutputStream().write(param.getBytes());
+		} catch (IOException e) {
+			Log.logE(e);
+			return false;
+		}		
+		return true;
+	}
 }

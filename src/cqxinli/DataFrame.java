@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 @SuppressWarnings("serial")
 public class DataFrame extends JFrame{
@@ -69,7 +70,7 @@ public class DataFrame extends JFrame{
 	}
 	
 	private void NewFrame(){
-		int width=400,height=380;
+		int width=400,height=400;
 		this.setSize(width, height);
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension ss=tk.getScreenSize();
@@ -77,37 +78,40 @@ public class DataFrame extends JFrame{
 		this.setBackground(Color.WHITE);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
-		addPanel();
-		this.setVisible(true);		
+		addPanel();	
 	}
 	
 	private void addPanel(){
-		this.setLayout(new GridLayout(10,1));
+		JTabbedPane pTPSwitchPanel = new JTabbedPane();
+		
+		
+		JPanel pPanelRouter = new JPanel();
+		pPanelRouter.setLayout(new GridLayout(10,1));
 		JLabel m_lab_accinfo=new JLabel("校园宽带账号信息");
-		add(m_lab_accinfo);
+		pPanelRouter.add(m_lab_accinfo);
 		name=new FormPanel("输入您的用户名");
 		name.setTooltipData("请在这里输入你的校园/家庭宽带账号名称\n例如 111111111@cqxxx");
-		add(name);
+		pPanelRouter.add(name);
 		password=new PasswordPanel("您的密码");
 		password.setTooltipData("请在这里输入你的校园/家庭宽带账号密码");
-		add(password);
+		pPanelRouter.add(password);
 		JLabel m_lab_routerinfo=new JLabel("路由器管理员信息，可在路由器机身下方标签找到");
-		add(m_lab_routerinfo);
+		pPanelRouter.add(m_lab_routerinfo);
 		ip=new FormPanel("路由器IP地址(默认192.168.1.1)");
 		ip.setValue("192.168.1.1");
 		ip.setTooltipData("请输入你的路由器的IP地址！");
-		add(ip);
+		pPanelRouter.add(ip);
 		adminName=new FormPanel("路由器管理员用户名","admin",true);
 		adminName.setTooltipData("输入你的路由器的管理员名称，如果你的路由器登陆只要求密码，请输入“admin”");
-		add(adminName);
+		pPanelRouter.add(adminName);
 		adminPassword=new PasswordPanel("路由器管理员密码");
 		adminPassword.setTooltipData("请在这里输入你的路由器管理员的密码。");
-		add(adminPassword);
+		pPanelRouter.add(adminPassword);
 		//提示
 		JPanel jp2=new JPanel();
 		jp2.setBackground(Color.WHITE);
 		jp2.setLayout(new GridLayout(1,1));
-		add(jp2);
+		pPanelRouter.add(jp2);
 		Tips.setForeground(Color.RED);
 		jp2.add(Tips);
 		//按钮
@@ -141,29 +145,23 @@ public class DataFrame extends JFrame{
 			
 		});
 		
-		JButton pButAdvance=new JButton("高级");
-		pButAdvance.setToolTipText("这里有一些其他的可用选项");
-		final AdvanceFrame pAdvFrame=new AdvanceFrame(this);
-		pButAdvance.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				pAdvFrame.setVisible(true);
-			}
-			
-		});
 		//jp3.add(dial);		
 		jp3.add(pButDef);
 		jp3.add(pButSet);
 		jp3.add(pButSave);
-		this.add(jp3);
+		pPanelRouter.add(jp3);
 		JPanel pVerPanel=new JPanel();
 		pVerPanel.setLayout(new BorderLayout());
 		JLabel pLabVer=new JLabel("版本"+MainClass.getVersionNoBuild()+" by CrazyChen@CQUT");
 		pVerPanel.add(pLabVer,BorderLayout.WEST);
-		pVerPanel.add(pButAdvance,BorderLayout.EAST);
-		add(pVerPanel);		
+		pPanelRouter.add(pVerPanel);		
 		Log.log("已经完成界面载入操作");
+		
+		pTPSwitchPanel.add(pPanelRouter,"路由器设置");
+		pTPSwitchPanel.add(new RealUserFrame(),"账号计算");
+		pTPSwitchPanel.add(new AdvancePanel(),"高级选项");
+		pTPSwitchPanel.add(new HelpInfoPanel(),"关于软件");
+		add(pTPSwitchPanel);
 	}
 	
 	public static void showTips(String info){

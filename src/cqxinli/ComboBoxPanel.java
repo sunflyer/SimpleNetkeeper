@@ -48,6 +48,10 @@ public class ComboBoxPanel<T> extends JPanel{
 		this.gComboBox.setSelectedItem(item);
 	}
 	
+	public void setSelectedIndex(int index){
+		this.gComboBox.setSelectedIndex(index);
+	}
+	
 	public void setAllowSelect(boolean i){
 		this.gComboBox.setEnabled(i);
 	}

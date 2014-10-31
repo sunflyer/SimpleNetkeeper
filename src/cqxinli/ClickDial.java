@@ -2,58 +2,69 @@ package cqxinli;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
+import javax.swing.JButton;
 
 public class ClickDial implements ActionListener{
 
-	public ClickDial(FormPanel username,PasswordPanel pswd){
-		this.username=username;
-		this.password=pswd;
-	}
+	JButton gBut;
+	private int dialRes;
 	
-	private FormPanel username;
-	private PasswordPanel password;
+	public synchronized void setRes(int R){this.dialRes=R;this.dialRes();}
+	public int getRes(){return this.dialRes;}
+	
+	public ClickDial(JButton p){
+		this.gBut=p;
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String name=username.getValue();
-		String pwd=password.getPassword();
+		this.gBut.setEnabled(false);
+		String name=MainClass.getDialFrame().getAccName();
+		final String pwd=MainClass.getDialFrame().getAccPassword();
 		if(pwd.length()<6 || name.equals("")){
-			DataFrame.showTips("错误：用户名或者密码不合法");
+			this.setInfo("用户名或密码不符合要求");
 		}
 		else{
-			DataFrame.showTips("进度：计算加密后的用户名，");
+			
 			//真是用户名
 			CXKUsername un=new CXKUsername(name);
-			name=un.Realusername();
+			final String Realname=un.Realusername();
 			//开始拨号
-			DataFrame.showTips("进度：开始拨号");
+			MainClass.getDialFrame().setConnectionState("开始拨号操作");
 			//拨号操作
-			try {
-				//有问题
-				Process p=Runtime.getRuntime().exec("cmd /c rasdial NetKeeper "+name+" "+pwd);
-				System.out.println("cmd /c rasdial NetKeeper "+name+" "+pwd);
-				StringBuilder sb=new StringBuilder();
-				BufferedReader be=new BufferedReader(new InputStreamReader(p.getInputStream()));
-				String line;
-				while((line=be.readLine())!=null){
-					sb.append(line);
-				}
-				String processData=sb.toString();
-				if(processData.indexOf("已连接")>=0 || processData.indexOf("Connected")>=0){
-					DataFrame.showTips("已成功建立连接");
-				}
-				else{
-					DataFrame.showTips("建立连接失败");
-					System.out.println(processData);
-				}
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-	}
+			new Thread(new Runnable(){
 
+				@Override
+				public void run() {
+					setRes((int)dialRasWindows(Realname, pwd));	
+					gBut.setEnabled(true);
+					
+				}
+				
+			}).start();
+		}
+		
+	}
+	
+	private synchronized void setInfo(CharSequence c){
+		MainClass.getDialFrame().setConnectionState(c);
+	}
+	
+	private synchronized void dialRes(){
+		switch(this.getRes()){
+		case 623:
+		case 624:
+		case 625:this.setInfo("连接发生内部错误");break;
+		case 629:this.setInfo("连接被远程计算机关闭");break;
+		case 678:this.setInfo("远程计算机没有响应");break;
+		case 691:this.setInfo("用户凭据无法访问网络");break;
+		case 720:this.setInfo("不能建立连接。你可能需要更改设置");break;
+		default:this.setInfo("不可用的服务状态");
+		}
+		Log.log(this.getRes()+":"+this.dialRasWindowsErrorStr(getRes()));
+	}
+	
+	private native long dialRasWindows(String username,String password);
+
+	private native String dialRasWindowsErrorStr(long error);
 }

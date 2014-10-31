@@ -40,6 +40,7 @@ public class CXKUsername {
 		
 		public String Realusername(){					
 			long time=(new Date()).getTime();//得到系统时间，从1970.01.01.00:00:00 开始的秒数
+			//System.out.println(time);
 			time /= 1000;
 			long m_time1c;						//时间初处理m_time1c为结果,经过时间计算出的第一次加密
 			long m_time1convert;				//对时间操作后的结果，此为格式字串的原始数据
@@ -64,6 +65,7 @@ public class CXKUsername {
 			by2[1] = intToByte((t & 0xFF0000) / 0x10000);
 			by2[0] = intToByte((t & 0xFF000000) / 0x1000000);
 			
+			//System.out.println(by2[3]+" "+by2[2]+" "+by2[1]+" "+by2[0]);
 
 			/**
 			 * 倒置过程m_time1convert为结果
@@ -84,6 +86,8 @@ public class CXKUsername {
 			t3 = t3 >> 0x08;
 			t1 = t1 | t3;
 			m_time1convert = t1;
+			
+			//System.out.println(m_time1convert);
 
 			/**
 			 * 源数据1,对m_time1convert进行计算得到格式符源数据
@@ -96,6 +100,7 @@ public class CXKUsername {
 			ss[1] = trans((tc & 0xFF0000) / 0x10000);
 			ss[0] = trans((tc & 0xFF000000) / 0x1000000);
 			
+			//System.out.println(ss[3]+" "+ss[2]+ " "+ss[1]+ " "+ss[0]);
 			/**
 			 * 格式符初加密
 			 */
@@ -146,6 +151,12 @@ public class CXKUsername {
 			st1 *= 0x10;
 			pf[5] = trans(st1);
 			
+		/*	String arr="";
+			for(int x=0;x<6;x++){
+				arr+=(pf[x]+" ");
+			}
+			System.out.println(arr);*/
+			
 			for (int n = 0; n < 6; n++){
 				pf[n] += 0x20;
 				if ((pf[n]) >= 0x40){
@@ -153,9 +164,13 @@ public class CXKUsername {
 				}
 			}
 			
+			//System.out.println("m_f"+m_formatsring);
+			
 			for (int m = 0; m < 6; m++){
 				m_formatsring += pf[m];
 			}
+			
+			//System.out.println("m_f"+m_formatsring);
 			
 			String strInput;
 			String strtem;
@@ -169,6 +184,8 @@ public class CXKUsername {
 			System.arraycopy(by2, 0, temp, 0, by2.length);
 			System.arraycopy(strInput.getBytes(),0,temp,by2.length,strInput.getBytes().length);
 			m_md5 = MD5.getMD5(temp);
+			
+			//System.out.println("m5:"+m_md5);
 			m_md5use = m_md5.substring(0, 2);
 			m_realusername = m_formatsring + m_md5use + m_username;
 			m_realusername = LR + m_realusername;//前面两位为回车换行0D0A,接着再是后续的

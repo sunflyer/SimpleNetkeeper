@@ -33,7 +33,13 @@ public class ClickSet implements ActionListener{
 				@Override
 				public void run() {
 					mButton.setEnabled(false);
-					mRouter=new Router(mDF.g_getRouterIP(),mDF.g_getRouterAdmin(),mDF.g_getRouterPassword(),mDF.g_getAccName(),mDF.g_getAccPassword(),MainClass.getAuthMethod());
+					switch(MainClass.getRouterManufactor()){
+					case MainClass.ROUTER_MERCURY_TP_FAST:
+						mRouter=new Router(mDF.g_getRouterIP(),mDF.g_getRouterAdmin(),mDF.g_getRouterPassword(),mDF.g_getAccName(),mDF.g_getAccPassword(),MainClass.getAuthMethod());break;
+					case MainClass.ROUTER_Tenda:
+						mRouter=new RouterTenda(mDF.g_getRouterIP(),mDF.g_getRouterAdmin(),mDF.g_getRouterPassword(),mDF.g_getAccName(),mDF.g_getAccPassword(),MainClass.getAuthMethod());break;
+						default:return;
+					}
 					Log.log("正在配置用户连接，宽带账号名称"+mDF.g_getAccName()+",路由器账号："+mDF.g_getRouterAdmin());
 					
 					switch(mRouter.connect()){
