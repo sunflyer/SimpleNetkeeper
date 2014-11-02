@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_cqxinli_ClickDial_dialRasWindows
   (JNIEnv *, jobject, jstring, jstring);
 
+/*
+ * Class:     cqxinli_ClickDial
+ * Method:    dialRasWindowsErrorStr
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_cqxinli_ClickDial_dialRasWindowsErrorStr
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

@@ -33,7 +33,7 @@ public class DialFrame extends JFrame{
 	}
 	
 	public boolean isRememberAcc(){
-		return pChkAutoDial.isSelected();
+		return pChkRem.isSelected();
 	}
 	
 	public boolean isAutoDial(){
@@ -90,7 +90,7 @@ public class DialFrame extends JFrame{
 
 	public DialFrame(String m) {
 		super(m);
-		int width=400,height=240;
+		int width=400,height=200;
 		this.setSize(width, height);
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension ss=tk.getScreenSize();
@@ -108,7 +108,7 @@ public class DialFrame extends JFrame{
 		JTabbedPane pTPDialPanel=new JTabbedPane();
 		
 		JPanel pTPDial=new JPanel();
-		pTPDial.setLayout(new GridLayout(6,1));
+		pTPDial.setLayout(new GridLayout(5,1));
 		
 		this.gFPUser=new FormPanel("校园宽带账号","请输入你的校园宽带账号",true);
 		this.gPPPassword=new PasswordPanel("校园宽带密码");
@@ -120,26 +120,50 @@ public class DialFrame extends JFrame{
 		pChkRem=new JCheckBox("记住我的账户");
 		
 		pChkAutoDial=new JCheckBox("开机时自动登录");
-		
+		pChkAutoDial.setEnabled(false);
 		pPanCheck1.add(pChkRem);
 		pPanCheck1.add(pChkAutoDial);
-		JPanel pPanCheck2=new JPanel();
-		pChkHeartBeat=new JCheckBox("开启心跳包模拟功能（频繁掉线请开启此项，模拟MAC版心跳）");
 		
-		pPanCheck2.add(pChkHeartBeat);
+		pChkHeartBeat=new JCheckBox("心跳包模拟");
+		pChkHeartBeat.setEnabled(false);
+		pPanCheck1.add(pChkHeartBeat);
+		
 		pTPDial.add(pPanCheck1);
-		pTPDial.add(pPanCheck2);
 		
 		this.gConState=new JLabel("准备就绪");
+		this.gConState.setForeground(Color.RED);
 		pTPDial.add(this.gConState);
 		
+		final JButton pButTestDial=new JButton("测试账号");
+		pButTestDial.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new ClickDial(pButTestDial).Dial("chongzhi@cqdx", "111111", false);			
+			}
+		});
+				
 		JPanel pPanButton = new JPanel();
 		JButton pButDial=new JButton("立即拨号");
+		pButDial.setForeground(Color.MAGENTA);
 		pButDial.addActionListener(new ClickDial(pButDial));	
 		
-		pPanButton.add(pButDial);
-		pTPDial.add(pPanButton);
+		JButton pButBackMenu=new JButton("返回菜单");
+		pButBackMenu.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainClass.getMenuFrame().setVisible(true);
+				MainClass.getDialFrame().setVisible(false);
+			}
+			
+		});
 		
+		pPanButton.add(pButTestDial);
+		pPanButton.add(pButDial);				
+		pPanButton.add(pButBackMenu);
+		
+		pTPDial.add(pPanButton);
 		pTPDialPanel.add(pTPDial,"拨号操作");
 		
 		

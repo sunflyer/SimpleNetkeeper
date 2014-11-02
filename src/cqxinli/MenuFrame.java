@@ -1,6 +1,7 @@
 package cqxinli;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -8,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -83,7 +87,25 @@ public class MenuFrame extends javax.swing.JFrame {
 			
 		});
 		
+		JButton pButWeb=new JButton("Èí¼þ¸üÐÂ");
+		pButWeb.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("http://www.sunflyer.cn/?p=8"));
+				} catch (IOException e1) {
+					Log.logE(e1);
+				} catch (URISyntaxException e1) {
+					Log.logE(e1);
+				}
+				
+			}
+			
+		});
+		
 		pPanSelect.add(pChkDef);
+		pPanSelect.add(pButWeb);
 		add(pPanRo);
 		add(pPanDial);
 		add(pPanSelect);

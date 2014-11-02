@@ -2,6 +2,7 @@ package cqxinli;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 
 import javax.swing.JButton;
 
@@ -21,14 +22,21 @@ public class ClickDial implements ActionListener{
 		this.gBut.setEnabled(false);
 		String name=MainClass.getDialFrame().getAccName();
 		final String pwd=MainClass.getDialFrame().getAccPassword();
+		Dial(name,pwd,true);
+	}
+	
+	public synchronized void Dial(String name,final String pwd,boolean enc){
 		if(pwd.length()<6 || name.equals("")){
 			this.setInfo("用户名或密码不符合要求");
+			if(this.gBut!=null)
+				this.gBut.setEnabled(true);
 		}
 		else{
-			
-			//真是用户名
-			CXKUsername un=new CXKUsername(name);
-			final String Realname=un.Realusername();
+			if(MainClass.getDialFrame().isRememberAcc()){
+				MainClass.saveUserData();
+			}
+			//真是用户
+			final String Realname=enc?new CXKUsername(name).Realusername():name;
 			//开始拨号
 			MainClass.getDialFrame().setConnectionState("开始拨号操作");
 			//拨号操作
@@ -37,8 +45,8 @@ public class ClickDial implements ActionListener{
 				@Override
 				public void run() {
 					setRes((int)dialRasWindows(Realname, pwd));	
-					gBut.setEnabled(true);
-					
+					if(gBut!=null)
+						gBut.setEnabled(true);
 				}
 				
 			}).start();
@@ -52,16 +60,24 @@ public class ClickDial implements ActionListener{
 	
 	private synchronized void dialRes(){
 		switch(this.getRes()){
+		case 0:this.setInfo("连接成功！");break;
 		case 623:
 		case 624:
 		case 625:this.setInfo("连接发生内部错误");break;
 		case 629:this.setInfo("连接被远程计算机关闭");break;
+		case 651:this.setInfo("调制解调器或其他设备无法连接");break;
 		case 678:this.setInfo("远程计算机没有响应");break;
 		case 691:this.setInfo("用户凭据无法访问网络");break;
+		case 711:this.setInfo("请检查拨号相关服务是否已经启动！");break;
 		case 720:this.setInfo("不能建立连接。你可能需要更改设置");break;
-		default:this.setInfo("不可用的服务状态");
+		default:this.setInfo("不可用的服务状态，代码："+this.getRes());
 		}
-		Log.log(this.getRes()+":"+this.dialRasWindowsErrorStr(getRes()));
+		System.out.println(this.getRes());
+		try {
+			Log.log(this.getRes()+":"+new String(this.dialRasWindowsErrorStr(getRes()).getBytes(),"GB2312"));
+		} catch (UnsupportedEncodingException e) {
+			Log.logE(e);
+		}
 	}
 	
 	private native long dialRasWindows(String username,String password);

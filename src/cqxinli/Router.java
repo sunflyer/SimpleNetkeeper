@@ -476,7 +476,9 @@ public class Router extends RouterSet{
 			HttpURLConnection pCon=this.getConnection("http://"+this.gRouterIP+"/userRpm/WanDynamicIpCfgRpm.htm?wantype=0&mtu=1500&downBandwidth=0&upBandwidth=0&Save=%B1%A3+%B4%E6");
 			this.setDialProperty(pCon);
 			pCon.connect();
-			this.setState("已向路由器发送内网模式操作数据。");
+			String tHTML=this.getHTMLContent(pCon.getInputStream());
+			Log.log(tHTML);
+			this.setState(tHTML.indexOf("dhcp")>=0?"已向路由器发送内网模式操作数据。":"操作失败");
 		} catch (IOException e) {
 			this.setState("处理操作时出现错误");
 			Log.logE(e);

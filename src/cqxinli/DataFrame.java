@@ -154,6 +154,19 @@ public class DataFrame extends JFrame{
 		pVerPanel.setLayout(new BorderLayout());
 		JLabel pLabVer=new JLabel("版本"+MainClass.getVersionNoBuild()+" by CrazyChen@CQUT");
 		pVerPanel.add(pLabVer,BorderLayout.WEST);
+		
+		JButton pButBackMenu=new JButton("返回菜单");
+		pButBackMenu.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainClass.getMenuFrame().setVisible(true);
+				MainClass.getDataFrame().setVisible(false);
+			}
+			
+		});
+		pVerPanel.add(pButBackMenu,BorderLayout.EAST);
+		
 		pPanelRouter.add(pVerPanel);		
 		Log.log("已经完成界面载入操作");
 		

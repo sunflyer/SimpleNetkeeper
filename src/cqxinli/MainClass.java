@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 
 public class MainClass {
 	//========================================================================
-	public static final String __g_ver_Build="0030";
-	public static final String BUILD_DATE="2014-10-31 21:48";
+	public static final String __g_ver_Build="0031";
+	public static final String BUILD_DATE="2014-11-02 14:48";
 	public static final int __g_ver_MainVer=1;
 	public static final int __g_ver_SubVer=1;
 	public static final int __g_ver_FixVer=3;
@@ -140,6 +140,13 @@ public class MainClass {
 	
 	//版本验证方式
 	private static int gAuthMethod=Router.AUTH_NOT_AVALIABLE;
+	public static int getAuthMethod(){
+		return MainClass.gAuthMethod;
+	}
+	
+	public static void setAuthMethod(int aM){
+		MainClass.gAuthMethod=aM;
+	}
 	
 	//========================================================================
 	//获取APP版本
@@ -350,15 +357,6 @@ public class MainClass {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Log.log(Log.nLine+"==========================已经启动===============================");
-		boolean pGetState=false;
-		for(int i=0;i<args.length;i++){
-			if(args[i].equals("-debug") || args[i].equals("/debug")){
-				MainClass.allowDebug=true;
-				Log.log("检测到命令行指令参数："+args[i]+"，允许调试模式启动");
-			}else if(args[i].equals("-state")|| args[i].equals("/state")){
-				pGetState=true;
-			}
-		}	
 		
 		try{
 			System.loadLibrary("SimpNKRasDialLibx86");
@@ -382,7 +380,9 @@ public class MainClass {
 		MainClass.gMenuFrame=new MenuFrame("Simple Netkeeper");
 		MainClass.gDialInterface=new DialFrame("Simple Netkeeper For Dialer");
 		MainClass.setUserData();
-		Log.log(gRemWindowState+"");
+		
+		processArgs(args);
+		
 		if(gRemWindowState){
 			Log.log("已发现默认窗体设置");
 			switch(MainClass.getDefaultWindow()){
@@ -401,25 +401,7 @@ public class MainClass {
 		}else{
 			gMenuFrame.setVisible(true);
 		}
-		
-		if(pGetState){			
-			Router pRouter=new Router(gDataFrame.g_getRouterIP(),gDataFrame.g_getRouterAdmin(),gDataFrame.g_getRouterPassword(),gDataFrame.g_getAccName(),gDataFrame.g_getAccPassword());
-			pRouter.LoadPPPoEInf();
-			String[] inf=pRouter.getPPPoEInf();
-			if(inf!=null){
-				for(String x:inf){
-					System.out.println(x);
-				}
-				System.out.println("长度为"+inf.length);
-				System.out.println("The PPPoE Inf in index 26th is "+inf[26]);
-				pRouter.trackLink();
-			}
-			else{
-				DataFrame.showTips("跟踪当前连接情况出现错误");
-			}
-		}
-		
-		
+			
 		//MainClass.getDataFrame().setVisible(true);
 		
 		String tConfirmData="您应当为本软件的使用以及行为受到约束，在同意以下条件的情况下，您可以免费使用、"
@@ -439,11 +421,47 @@ public class MainClass {
 		
 	}
 	//========================================================================
-	public static int getAuthMethod(){
-		return MainClass.gAuthMethod;
+	//命令行处理
+	private static void processArgs(String[] args){
+		boolean pGetState=false;
+		boolean isAutoDial=false;
+		boolean isTestAcc=false;
+		for(int i=0;i<args.length;i++){
+			if(args[i].equals("-debug") || args[i].equals("/debug")){
+				MainClass.allowDebug=true;
+				Log.log("检测到命令行指令参数："+args[i]+"，允许调试模式启动");
+			}else if(args[i].equals("-state")|| args[i].equals("/state")){
+				pGetState=true;
+			}else if(args[i].equals("-dial") || args[i].equals("/dial")){
+				isAutoDial=true;
+			}else if(args[i].equals("-testacc") || args[i].equals("/testacc")){
+				isTestAcc=true;
+			}
+		}	
+		if(pGetState){			
+			Router pRouter=new Router(gDataFrame.g_getRouterIP(),gDataFrame.g_getRouterAdmin(),gDataFrame.g_getRouterPassword(),gDataFrame.g_getAccName(),gDataFrame.g_getAccPassword());
+			pRouter.LoadPPPoEInf();
+			String[] inf=pRouter.getPPPoEInf();
+			if(inf!=null){
+				for(String x:inf){
+					System.out.println(x);
+				}
+				System.out.println("长度为"+inf.length);
+				System.out.println("The PPPoE Inf in index 26th is "+inf[26]);
+				pRouter.trackLink();
+			}
+			else{
+				DataFrame.showTips("跟踪当前连接情况出现错误");
+			}
+		}
+		if(isAutoDial){
+			if(isTestAcc){
+				new ClickDial(null).Dial("chongzhi@cqdx", "111111", false);	
+			}else{
+				new ClickDial(null).Dial(MainClass.getDialFrame().getAccName(), MainClass.getDialFrame().getAccPassword(), true);				
+			}
+		}
 	}
 	
-	public static void setAuthMethod(int aM){
-		MainClass.gAuthMethod=aM;
-	}
+	//=========================================================================
 }
