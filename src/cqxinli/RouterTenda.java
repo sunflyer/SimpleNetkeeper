@@ -63,7 +63,7 @@ public class RouterTenda extends RouterSet {
 				pSb.append("&PPW="+this.gRouterAccPassword);
 				pSb.append("&MTU=1492&SVC=&AC=&PCM=0&PIDL=60&hour1=0&minute1=0&hour2=0&minute2=0&l2tpIP=&l2tpPUN=&l2tpPPW=&l2tpMTU=1452&l2tpAdrMode=1&l2tpWANIP=0.0.0.0&l2tpWANMSK=0.0.0.0&l2tpWANGW=0.0.0.0");				
 				this.writePostParam(pCon, pSb.toString());
-				pCon.connect();
+				pCon.getInputStream();
 				
 				//Æô¶¯Á´½Ó
 				HttpURLConnection pConNow=this.getConnection("http://"+this.gRouterIP+"/goform/SysStatusHandle");
@@ -149,7 +149,7 @@ public class RouterTenda extends RouterSet {
 		}
 		case AUTH_OLD:{
 			
-			return 0;
+			return -1;
 		}
 		}
 		return -1;

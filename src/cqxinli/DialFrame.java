@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 public class DialFrame extends JFrame{
-	
+	//=================================================================
 	private FormPanel gFPUser;
 	private PasswordPanel gPPPassword;
 	
@@ -43,7 +43,7 @@ public class DialFrame extends JFrame{
 	public boolean isHeartBeat(){
 		return this.pChkHeartBeat.isSelected();
 	}
-	
+	//=================================================================
 	//无限面板项目
 	
 	private FormPanel gSSID;
@@ -56,13 +56,44 @@ public class DialFrame extends JFrame{
 	public String getWifiKey(){
 		return this.gPPWifiPassword.getPassword();
 	}
+	
+	private boolean gWifi=false;
+	
+	public void allowWifi(boolean i){
+		this.gSSID.setEnabled(i);
+		this.gPPWifiPassword.setEnabled(i);
+		this.gWifi=i;
+		if(!isWifiAllowed()){
+			closeWifi();
+		}
+	}
+	
+	public static final int WIFI_STATE_SUCCESS=0;
+	public static final int WIFI_STATE_ERROR=1;
 		
+	public int openWifi(){
+		
+		
+		return WIFI_STATE_ERROR;
+	}
+	
+	public void closeWifi(){
+		
+	}
+	
+	public boolean isWifiAllowed(){return this.gWifi;}
+	//=================================================================		
 	private JLabel gConState;
 	private JLabel gWifiState;
-		
+
 	public void setConnectionState(CharSequence c){
 		Log.log("拨号状态："+c);
 		this.gConState.setText(c.toString());
+	}
+	
+	public void setWifiState(CharSequence c){
+		Log.log("无线："+c);
+		this.gWifiState.setText(c.toString());
 	}
 	
 	//设置项,仅初始化
@@ -78,11 +109,6 @@ public class DialFrame extends JFrame{
 		this.gSSID.setValue(SSID);
 		this.gPPWifiPassword.setPassword(password);
 	}
-	
-	
-	
-	
-	private boolean isDialed;
 	/**
 	 * 
 	 */
@@ -177,10 +203,11 @@ public class DialFrame extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(isDialed){
-					
-				}
-				
+				if(isWifiAllowed()){
+					openWifi();
+				}else{
+					setWifiState("当前没有拨号，不能建立无线共享！");
+				}				
 			}
 			
 		});

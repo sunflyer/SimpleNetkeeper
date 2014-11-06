@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 
 public class MainClass {
 	//========================================================================
-	public static final String __g_ver_Build="0031";
-	public static final String BUILD_DATE="2014-11-02 14:48";
+	public static final String __g_ver_Build="0032";
+	public static final String BUILD_DATE="2014-11-05 19:18";
 	public static final int __g_ver_MainVer=1;
 	public static final int __g_ver_SubVer=1;
 	public static final int __g_ver_FixVer=3;

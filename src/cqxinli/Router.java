@@ -231,7 +231,7 @@ public class Router extends RouterSet{
 			case CONNECTION_NO_RESPONSE:this.setState("路由器状态：服务器没有响应(请尝试检查你的路由器连线，或重启路由器)");getData=false;break;
 			case CONNECTION_NOT_CONNECTED:this.setState("路由器状态：未连接");getData=false;break;
 			case CONNECTION_NOT_CONNECTED_WAN:this.setState("路由器状态：WAN口未连接");getData=false;break;
-			case CONNECTION_OPERATION_EXCEPTION:this.setState("路由器状态：操作出现异常");getData=false;break;
+			case CONNECTION_OPERATION_EXCEPTION:this.setState("路由器状态：操作出现异常（软件无法判断，请自行查看网络是否连接！）");getData=false;break;
 			case CONNECTION_OPERATION_NO_MODE:this.setState("路由器状态：没有可用方式连接到路由器");getData=false;break;
 			case CONNECTION_SUCCESS:this.setState("路由器状态：路由器已连接到网络");getData=false;break;
 			case CONNECTION_UNKNOWN:this.setState("路由器状态：发生未知错误");getData=false;break;
