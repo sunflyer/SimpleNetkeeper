@@ -1,3 +1,3 @@
 @echo off
-javaw -jar NetkeeperForRouter.jar
+java -jar NetkeeperForRouter.jar
 exit
