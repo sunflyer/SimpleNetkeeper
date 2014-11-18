@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -116,7 +117,7 @@ public class DialFrame extends JFrame{
 
 	public DialFrame(String m) {
 		super(m);
-		int width=400,height=200;
+		int width=400,height=230;
 		this.setSize(width, height);
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension ss=tk.getScreenSize();
@@ -165,7 +166,9 @@ public class DialFrame extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new ClickDial(pButTestDial).Dial("chongzhi@cqdx", "111111", false);			
+				if(JOptionPane.showConfirmDialog(DialFrame.this, "请注意：\n测试账号使用仅供测试你的网络是否可用，这个账号是电信官方用于获取动态密码的临时登陆账号，请不要长时间恶意占用！","警告",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					new ClickDial(pButTestDial).Dial("chongzhi@cqdx", "111111", false);	
+				}		
 			}
 		});
 				

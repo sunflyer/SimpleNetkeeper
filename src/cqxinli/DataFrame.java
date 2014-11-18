@@ -144,7 +144,7 @@ public class DataFrame extends JFrame{
 			}
 			
 		});
-		
+
 		//jp3.add(dial);		
 		jp3.add(pButDef);
 		jp3.add(pButSet);
@@ -168,13 +168,14 @@ public class DataFrame extends JFrame{
 		pVerPanel.add(pButBackMenu,BorderLayout.EAST);
 		
 		pPanelRouter.add(pVerPanel);		
-		Log.log("已经完成界面载入操作");
-		
+				
 		pTPSwitchPanel.add(pPanelRouter,"路由器设置");
 		pTPSwitchPanel.add(new RealUserFrame(),"账号计算");
 		pTPSwitchPanel.add(new AdvancePanel(),"高级选项");
 		pTPSwitchPanel.add(new HelpInfoPanel(),"关于软件");
 		add(pTPSwitchPanel);
+		
+		Log.log("已经完成界面载入操作");
 	}
 	
 	public static void showTips(String info){

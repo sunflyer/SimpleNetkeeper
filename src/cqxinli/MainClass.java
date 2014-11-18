@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 
 public class MainClass {
 	//========================================================================
-	public static final String __g_ver_Build="0032";
-	public static final String BUILD_DATE="2014-11-05 19:18";
+	public static final String __g_ver_Build="0033";
+	public static final String BUILD_DATE="2014-11-18 12:51";
 	public static final int __g_ver_MainVer=1;
 	public static final int __g_ver_SubVer=1;
 	public static final int __g_ver_FixVer=3;
@@ -22,7 +22,7 @@ public class MainClass {
 	public static final int VER_BETA=2;
 	public static final int VER_SPEC=3;
 	//版本标识  0-Release 1-Debug 2-Beta 3-Special
-	private static int __g_ver_VerSign=VER_BETA;
+	private static int __g_ver_VerSign=VER_REL;
 	//========================================================================
 	//窗口标识符
 	public static final short WINDOW_ROUTER=2;
@@ -263,7 +263,6 @@ public class MainClass {
 						MainClass.getDialFrame().setConfigDataDial(tAccName, tAccPassword, tIsHeartBeat, tIsRem, tIsAutoDial);
 						MainClass.getDialFrame().setConfigDataWifi(tWifiSSID, tWifiPassword);
 						MainClass.setDefaultWindow(Short.parseShort(pro.getProperty(MainClass.Config_Application_DefaultMenu)));
-						Log.log(MainClass.getDefaultWindow()+"??????");
 						gRemWindowState=(MainClass.getDefaultWindow()!=WINDOW_MENU);
 					}
 					case "3":{
@@ -277,7 +276,7 @@ public class MainClass {
 						MainClass.setRouterManufactor(Integer.parseInt(pro.getProperty(MainClass.Config_Router_Manufactor)));
 					}break;
 					default:{
-						Log.log("其他配置读取出现错误，无法操作，保持默认");
+						Log.log("其他配置读取出现错误，无法操作，保持默认。读取到的配置文件版本："+pro.getProperty(MainClass.Config_Application_ConfVer));
 					}
 					}
 				}else{
@@ -353,11 +352,9 @@ public class MainClass {
 	public static boolean getLibLoaded(){
 		return loadedLib;
 	}
-	//========================================================================
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Log.log(Log.nLine+"==========================已经启动===============================");
-		
+	
+	public static void loadSystemLib(){
+		/*
 		try{
 			System.loadLibrary("SimpNKRasDialLibx86");
 			loadedLib=true;
@@ -374,6 +371,24 @@ public class MainClass {
 				Log.log(ex.toString());
 			}
 		}
+		*/
+		String pLibName="amd64".equals(System.getProperty("os.arch"))?"SimpNKRasDialLibx64":"SimpNKRasDialLibx86";
+		try{
+			System.loadLibrary(pLibName);
+			loadedLib=true;
+		}catch(UnsatisfiedLinkError e){
+			Log.log(e.toString());
+			loadedLib=false;
+		}finally{
+			Log.log("加载库文件："+pLibName+(getLibLoaded()?"成功":"失败"));
+		}
+	}
+	//========================================================================
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Log.log(Log.nLine+"==========================已经启动===============================");
+		Log.logSysInfo();
+		loadSystemLib();
 		
 		Log.log("应用程序版本为"+MainClass.getVersion());
 		MainClass.gDataFrame=new DataFrame("Simple Netkeeper For Router");		
@@ -439,7 +454,7 @@ public class MainClass {
 			}
 		}	
 		if(pGetState){			
-			Router pRouter=new Router(gDataFrame.g_getRouterIP(),gDataFrame.g_getRouterAdmin(),gDataFrame.g_getRouterPassword(),gDataFrame.g_getAccName(),gDataFrame.g_getAccPassword());
+			Router pRouter=new Router(gDataFrame.g_getRouterIP(),gDataFrame.g_getRouterAdmin(),gDataFrame.g_getRouterPassword(),gDataFrame.g_getAccName(),gDataFrame.g_getAccPassword(),MainClass.getAuthMethod());
 			pRouter.LoadPPPoEInf();
 			String[] inf=pRouter.getPPPoEInf();
 			if(inf!=null){

@@ -22,7 +22,7 @@ public class AdvancePanel extends JPanel{
 	}
 	
 	private void initWindow(){
-		this.setLayout(new GridLayout(11,1));
+		this.setLayout(new GridLayout(10,1));
 
 		ComboBoxPanel<String> pCBPanelIsSchool=new ComboBoxPanel<String>("使用模式",new String[]{"家用模式（不加密）","学校模式（加密账号）"},new ItemListener(){
 			@Override
@@ -152,24 +152,24 @@ public class AdvancePanel extends JPanel{
 		
 		this.add(pPanelRouterWirelessSetButton);
 		
-		JPanel pPanelApplicationConfig=new JPanel();
-		pPanelApplicationConfig.add(new JLabel("应用程序设置"));
-		this.add(pPanelApplicationConfig);
-		
 		JPanel pPanelApplicationConfigButton=new JPanel();
 		
 		JButton pButInfo=new JButton("路由器当前信息");
 		pButInfo.setEnabled(false);
 		
-		JButton pButInternal = new JButton("内网模式（仅限水星/TP）");
+		JButton pButInternal = new JButton("内网模式（仅限水星/TP/部分FAST）");
 		pButInternal.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(JOptionPane.showConfirmDialog(AdvancePanel.this, "请注意：\n这个操作只对TP/水星路由器有效，在执行操作完毕后，路由器的WAN口将断开外网链接同时切换到动态IP模式！\n在继续操作前，你需要在路由器拨号界面填写正确的路由器配置信息！\n确定继续吗？","操作警告",JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION){
-					DataFrame tDf=MainClass.getDataFrame();
-					Router tRouter=new Router(tDf.g_getRouterIP(),tDf.g_getRouterAdmin(),tDf.g_getRouterPassword(),tDf.g_getAccName(),tDf.g_getAccPassword(),MainClass.getAuthMethod());
-					tRouter.setInternalNet();
+				if(JOptionPane.showConfirmDialog(AdvancePanel.this, "请注意：\n这个操作只对TP/水星以及部分FAST路由器有效，在执行操作完毕后，路由器的WAN口将断开外网链接同时切换到动态IP模式！\n在继续操作前，你需要在路由器拨号界面填写正确的路由器配置信息！\n确定继续吗？","操作警告",JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION){
+					if(MainClass.getRouterManufactor()==MainClass.ROUTER_MERCURY_TP_FAST){
+						DataFrame tDf=MainClass.getDataFrame();
+						Router tRouter=new Router(tDf.g_getRouterIP(),tDf.g_getRouterAdmin(),tDf.g_getRouterPassword(),tDf.g_getAccName(),tDf.g_getAccPassword(),MainClass.getAuthMethod());
+						tRouter.setInternalNet();
+					}else{
+						JOptionPane.showMessageDialog(AdvancePanel.this, "很抱歉，此功能不适用于你的路由器产品");
+					}
 				}
 				
 			}

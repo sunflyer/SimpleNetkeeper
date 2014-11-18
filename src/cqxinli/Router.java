@@ -126,6 +126,17 @@ public class Router extends RouterSet{
 					Log.log("已经检测到数组内容。长度为"+this.mPPPoEInf.length);
 				}
 					
+			}else{
+				String KeyWord3="var pppoeInf = new Array(";
+				pIndex=HTML.indexOf(KeyWord3);
+				if(pIndex>=0){
+					int eIndex=HTML.indexOf(");", pIndex);
+					if(eIndex>pIndex){
+						this.mPPPoEInf=HTML.substring(pIndex+KeyWord3.length(),eIndex).split(",\n");
+						this.TrimPPPoEInf();
+						Log.log("已经检测到数组内容。长度为"+this.mPPPoEInf.length);
+					}
+				}
 			}
 		} catch (IOException e) {
 			Log.logE(e);
@@ -410,7 +421,7 @@ public class Router extends RouterSet{
 	private static final String PAGE_VAR_IP="%IP%";
 	private static final String PAGE_VAR_SSID="%SSID%";
 	private static final String PAGE_VAR_KEY="%KEY%";
-	private static final String PAGE_VAR_HIDESSID="%HIDESSID";
+	private static final String PAGE_VAR_HIDESSID="%HIDESSID%";
 	private static final String PAGE_VAR_HIDESSID_DATA="&broadcast=2";
 	
 	
@@ -462,10 +473,14 @@ public class Router extends RouterSet{
 	protected int setDialProperty(HttpURLConnection mRouterUrlCon) {
 		switch(this.mAuthMethod){
 		case Router.AUTH_OLD:mRouterUrlCon.setRequestProperty(
-				"Authorization",this.getBase64Acc());return 0;
+				"Authorization",this.getBase64Acc());
+				Log.log("验证方式：401");
+		return 0;
 		case Router.AUTH_WEB:mRouterUrlCon.setRequestProperty(
 				"Cookie",
-				"Authorization="+ this.getBase64Acc());return 0;
+				"Authorization="+ this.getBase64Acc());
+		Log.log("验证方式：402");
+		return 0;
 		default:return Router.RES_NO_DIAL_MODE;
 		}
 		

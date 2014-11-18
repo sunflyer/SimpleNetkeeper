@@ -54,7 +54,7 @@ public class ClickDial implements ActionListener{
 		
 	}
 	
-	private synchronized void setInfo(CharSequence c){
+	private void setInfo(CharSequence c){
 		MainClass.getDialFrame().setConnectionState(c);
 	}
 	
@@ -63,14 +63,14 @@ public class ClickDial implements ActionListener{
 		case 0:this.setInfo("连接成功！");break;
 		case 625:this.setInfo("连接发生内部错误（625）");break;
 		case 629:this.setInfo("连接被远程计算机关闭（629）");break;
-		case 651:this.setInfo("调制解调器或其他设备无法连接（651）");break;
+		case 651:this.setInfo("调制解调器或其他设备无法连接（网线插好了吗？）（651）");break;
 		case 678:this.setInfo("远程计算机没有响应（678）");break;
 		case 691:this.setInfo("用户凭据无法访问网络（691）");break;
 		case 711:this.setInfo("请检查拨号相关服务是否已经启动！（711）");break;
 		case 720:this.setInfo("不能建立连接。你可能需要更改设置（720）");break;
 		case 813:this.setInfo("你已经有一个活动的连接了！(813)");break;
 		case 815:this.setInfo("远程计算机没有响应(815)");
-		default:this.setInfo("不可用的服务状态，代码："+this.getRes());
+		default:this.setInfo("建立拨号连接失败，错误代码："+this.getRes());
 		}
 		System.out.println(this.getRes());
 		MainClass.getDialFrame().allowWifi(this.getRes()==0);

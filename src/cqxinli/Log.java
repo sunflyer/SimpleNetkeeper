@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Properties;
 
 public class Log {
 	public static final String gLogFileName="NetkeeperLog.log";
@@ -44,11 +45,24 @@ public class Log {
 		return gIsInit;
 	}
 	
+	public static void logSysInfo(){
+		Properties pPro=System.getProperties();
+		String pOsName=pPro.getProperty("os.name");
+		String pOsVer=pPro.getProperty("os.version");
+		String pJavaVer=pPro.getProperty("java.version");
+		String pOsArch=pPro.getProperty("os.arch");
+		String pJavaSpecVer=pPro.getProperty("java.specification.version");
+		log("》》》》》》》》》》》》》》》》》》》》System Information");
+		log("操作系统："+pOsName+"，版本："+pOsVer+"，架构："+pOsArch);
+		log("JAVA版本："+pJavaVer+"(Spec:"+pJavaSpecVer);
+		log("》》》》》》》》》》》》》》》》》》》》System Information");
+	}
+	
 	public static void log(String pCon){
 		if(isInit()){
 			try {
 				mLogger=new FileWriter(Log.gLogFile,true);
-				mLogger.write((new Date()).toString()+"："+pCon+Log.nLine);
+				mLogger.write(new Date()+"："+pCon+Log.nLine);
 				mLogger.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -67,6 +81,7 @@ public class Log {
 				mLogger=new FileWriter(Log.gLogFile,true);
 				mLogger.write((new Date()).toString()+"：################发现异常################"+Log.nLine+e.getMessage()+Log.nLine+Log.getStackTrace(e)+Log.nLine);
 				mLogger.close();
+				logSysInfo();
 			} catch (IOException ex) {
 				e.printStackTrace();
 			}
