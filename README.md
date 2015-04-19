@@ -1,7 +1,12 @@
 Simple Netkeeper
 
-安卓版本请参见这里：https://github.com/sunflyer/Simple-Netkeeper-Android
+
 ==================
+
+安卓版本请参见这里：https://github.com/sunflyer/Simple-Netkeeper-Android
+
+项目详细信息：https://sunflyer.cn/?p=8
+
 为重庆地区高校宽带用户编写的一个JAVA程序，旨在方便通过路由器链接到网络。
 
 这个项目旨在让重庆地区高校宽带用户可以方便的通过无线路由器访问宽带网络。由于Netkeeper通过加密真是用户名来限制高校用户通过路由器访问网络，路由器使用一直很麻烦。
