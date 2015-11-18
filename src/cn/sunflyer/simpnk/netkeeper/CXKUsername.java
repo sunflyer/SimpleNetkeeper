@@ -30,7 +30,31 @@ public class CXKUsername {
 			this.m_ver = 18;
 			this.m_lasttimec = 0;
 			this.m_username=username;
+/**
+# TODO: change RADIUS
+# 
+# ChongQing Netkeeper: cqxinliradius002
+# ChongQing Netkeeper(0094): xianxinli1radius
+# WuHan E xin: hubtxinli01
+# Hangzhou(Tested on HDU): singlenet01
+# NanChangV18: nanchang3.0
+# NanChangV12~V17: radius
+# NanChangV29: nanchang3.0
+# NanChangV32: jiangxi4.0
+# QingHai: qhtel@xiaoyuanyi
+# hebei: hebeicncxinli002
+# ShanDong Mobile : shandongmobile13
+# Shanxi Yixun : sh_xi@xiaoyuan01
+			*/
+			
 			this.RADIUS="cqxinliradius002";
+			
+/**
+# TODO: Change PREFIX1
+# 
+# NanChangV32: '\r1'
+# Others: '\r\n'
+*/
 			this.LR="\r\n";
 		}
 		
