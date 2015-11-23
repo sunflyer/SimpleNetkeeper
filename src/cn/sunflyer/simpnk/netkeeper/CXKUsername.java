@@ -45,6 +45,9 @@ public class CXKUsername {
 # hebei: hebeicncxinli002
 # ShanDong Mobile : shandongmobile13
 # Shanxi Yixun : sh_xi@xiaoyuan01
+# ShanDong Telecom : 560Ox!a0yuanOlIz  (For 3.7.3 Augest Version)
+# ShanDong Telecom : shdOx!a0yuan01lz  (For 3.7.3 October 27th Version)
+# GanSu Telecom 3.7.1 : xiaoyuanyixun001
 			*/
 			
 			this.RADIUS="cqxinliradius002";
