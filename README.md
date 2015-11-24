@@ -1,15 +1,23 @@
-Simple Netkeeper
-
+#Simple Netkeeper
 
 ==================
 
-安卓版本请参见这里：https://github.com/sunflyer/Simple-Netkeeper-Android
-
 项目详细信息：https://sunflyer.cn/?p=8
 
-软件和源代码基于GPL v3协议以及额外的个人开源软件协议分发，此外，不允许以任何形式将软件、源代码以及它们的衍生物用于任何形式的商业用途。
+==================
 
-对于想要改改APP拿来坑人牟利的，劝你好自为之，这玩意儿版权还是在我手上的，别逼我出手。
+##使用方式
+
+- git clone源代码
+- 导入Eclipse项目
+- 修改 src/netkeeper/CXKUsername.java中radius部分和LR部分为你所在地区的数据
+- 保存，导出可执行Java文件
+- 执行，and go on your configurations.
+
+
+##许可
+
+软件和源代码基于GPL v3协议以及额外的个人开源软件协议分发，此外，不允许以任何形式将软件、源代码以及它们的衍生物用于任何形式的商业用途。
 
 附：个人软件开放源代码协议
 
@@ -17,23 +25,7 @@ Simple Netkeeper
 
 ==================
 
-为重庆地区高校宽带用户编写的一个JAVA程序，旨在方便通过路由器链接到网络。
-
-这个项目旨在让重庆地区高校宽带用户可以方便的通过无线路由器访问宽带网络。由于Netkeeper通过加密真是用户名来限制高校用户通过路由器访问网络，路由器使用一直很麻烦。
-
-前段时间Netkeeper的加密方式已被破解，并且为安卓用户编写的类Netkeeper拨号程序也已经释出了很久，所以现在也是时候放出路由器的程序了
-
-这个程序可以帮助重庆地区使用Netkeeper的用户方便的通过路由器访问互联网，仅仅只需要输入账户和路由器信息即可。简单，容易，方便。
-
-在使用过程中不会收集任何个人信息或发送他们给任何人。
-
-但是请注意，这个程序并不能帮助那些半夜断网的同学突破断网的限制。也许你能找到不断网的号，然后再使用它。
-
-这个程序是免费的，并且你可以在这个页面获取到源代码。但是，使用本程序，或者获取/修改本程序源代码即表示你同意你不会将这款软件（及其源代码）或者软件的衍生版本（机器源代码）用于任何商业用途。否则，原作者有权利要求你停止商业用途的行为。
-
-==================
-
-A simple java application programming for who used to dial to Internet with Netkeeper in ChongQing.
+A simple java application programming for who used to dial to Internet with Netkeeper.
 
 This project is aimed to make every students in College in ChongQing could use their Broadband service easily with a Wireless Router. The wireless router is limited to be used in College due to the limitation of Netkeeper by encrypting the account name as real account name to access the internet services.
 
