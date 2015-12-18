@@ -48,6 +48,7 @@ public class CXKUsername {
 # ShanDong Telecom : 560Ox!a0yuanOlIz  (For 3.7.3 Augest Version)
 # ShanDong Telecom : shdOx!a0yuan01lz  (For 3.7.3 October 27th Version)
 # GanSu Telecom 3.7.1 : xiaoyuanyixun001
+# XinJiang Telecom 3.7.3 : xinjiang@0724
 			*/
 			
 			this.RADIUS="cqxinliradius002";
