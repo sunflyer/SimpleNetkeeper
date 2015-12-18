@@ -37,9 +37,8 @@ public class CXKUsername {
 # ChongQing Netkeeper(0094): xianxinli1radius
 # WuHan E xin: hubtxinli01
 # Hangzhou(Tested on HDU): singlenet01
-# NanChangV18: nanchang3.0
+# NanChangV18~V29: nanchang3.0
 # NanChangV12~V17: radius
-# NanChangV29: nanchang3.0
 # NanChangV32: jiangxi4.0
 # QingHai: qhtel@xiaoyuanyi
 # hebei: hebeicncxinli002
@@ -49,6 +48,8 @@ public class CXKUsername {
 # ShanDong Telecom : shdOx!a0yuan01lz  (For 3.7.3 October 27th Version)
 # GanSu Telecom 3.7.1 : xiaoyuanyixun001
 # XinJiang Telecom 3.7.3 : xinjiang@0724
+# ShangHai Unicom : xinlishlt01
+# ZheJiang SingleNet For Enterprise : zjxinlisx02
 			*/
 			
 			this.RADIUS="cqxinliradius002";
