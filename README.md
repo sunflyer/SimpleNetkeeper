@@ -3,9 +3,10 @@
 一个Java版本的简单路由器设置工具，适用于Netkeeper类客户端用户，可用于Win/*nix/Mac OS。
 目前版本支持TP-LINK旧版本以及水星/迅捷系列通杀
 
-请注意：此处所提供的算法仅适用于Netkeeper 2.5或者星空极速3.x版本，由于信利更新Netkeeper客户端至4.0，此处算法在新版本使用地区是无效的，等待大牛进一步解救。
+请注意：此程序所提供的算法仅适用于Netkeeper 2.5或者星空极速3.x版本，由于信利更新Netkeeper客户端至4.0，此处算法在新版本使用地区是无效的，等待大牛进一步解救。
 
 项目详细信息：https://sunflyer.cn/?p=8
+项目主页：https://simplenetkeeper.com
 
 ##已支持地区
 - 重庆Netkeeper 0055~0094
