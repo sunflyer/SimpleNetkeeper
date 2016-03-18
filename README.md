@@ -8,7 +8,10 @@
 为了避免部分代码被滥用因此关键功能（心跳）没有开放源代码。
 
 项目详细信息：https://sunflyer.cn/?p=8
+
 项目主页：https://simplenetkeeper.com
+
+短信验证码获取程序（新疆/陕西）：https://github.com/sunflyer/SimpleNetkeeper_ChinaNetValidationCode
 
 ##已支持地区
 - 重庆Netkeeper 0055~0094（重医/川美已更新4.6因此前述学校不再有效）
