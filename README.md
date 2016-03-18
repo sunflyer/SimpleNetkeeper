@@ -11,6 +11,8 @@
 
 项目主页：https://simplenetkeeper.com
 
+Android版本： https://github.com/sunflyer/SimpleNetkeeper_Android
+
 短信验证码获取程序（新疆/陕西）：https://github.com/sunflyer/SimpleNetkeeper_ChinaNetValidationCode
 
 ##已支持地区
