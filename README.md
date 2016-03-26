@@ -11,18 +11,16 @@
 
 项目主页：https://simplenetkeeper.com
 
-Android版本： https://github.com/sunflyer/SimpleNetkeeper_Android
-
 短信验证码获取程序（新疆/陕西）：https://github.com/sunflyer/SimpleNetkeeper_ChinaNetValidationCode
 
 ##已支持地区
-- 重庆Netkeeper 0055~0094（重医/川美已更新4.6，但目前应该是与2.5版本并行）
+- 重庆Netkeeper 0055~0094（重医/川美/重庆理工已更新4.7.2，但目前应该是与2.5版本并行，不要使用新版登录）
 - 湖北e信（已更新Netkeeper 4.6，但旧版本仍然有效）
 - 浙江闪讯
-- 江西星空极速v32（已更新Netkeeper 4.7，使用翼讯登陆过的账号不再有效）
+- 江西星空极速v32（已更新Netkeeper 4.7，大部分地区已不再有效）
 - 青海电信 （随山东电信，可能已更新Netkeeper 4.0，此处可能不再有效）
 - 新疆电信3.7.3 
-- 河北联通Netkeeper 0096（除石家庄信息工程学院/石家庄铁道大学四方学院南校区）
+- 河北联通Netkeeper 0096（似乎也已经更新4.7.8，请以实际情况为准）
 - 山东移动 0094  （即将更新）
 - 山东电信 3.7.3 （已更新Netkeeper 4.0，此处不再有效）
 - 陕西电信 3.7.3 （已更新4.0，但目前与3.7版本并行）
