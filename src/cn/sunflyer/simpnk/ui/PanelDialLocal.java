@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,7 +14,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import cqxinli.ClickDial;
 import cn.sunflyer.simpnk.control.StatusController;
+import cn.sunflyer.simpnk.netkeeper.CXKUsername;
 
 /**
  * 路由器本地拨号界面
@@ -62,10 +65,29 @@ public class PanelDialLocal extends JPanel{
 			}
 			
 		});
-		
-		JLabel pDialState = new JLabel("Ready");
+
+		//设置默认值
+		pLocalAcc.setText(StatusController.sLocalAccName);
+		pLocalPass.setPassword(StatusController.sLocalAccPassword);
+
+		final JLabel pDialState = new JLabel("Ready");
 		pDialState.setForeground(Color.RED);
 		StatusController.setComponentDialStatusBar(pDialState);
+
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			String libPath = System.getProperty("user.dir") + File.separator + "DialLib" + File.separator;
+			try {
+				System.load(libPath + "SimpNKRasDialLibx64.dll");
+			} catch (UnsatisfiedLinkError e1) {
+				try {
+					System.load(libPath + "SimpNKRasDialLibx86.dll");
+				} catch (UnsatisfiedLinkError e2) {
+					pDialState.setText("DLL加载失败");
+				}
+			}
+		} else {
+			pDialState.setText("仅Windows可用");
+		}
 		
 		JPanel pDialOpr = new JPanel();
 		
@@ -73,16 +95,27 @@ public class PanelDialLocal extends JPanel{
 		pConnect.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				if (pLocalAcc.getText().isEmpty())
+					return;
 
-			}			
+				String realUsername = (new CXKUsername(pLocalAcc.getText())).Realusername();
+				String password = pLocalPass.getPassword();
+
+				int err = ClickDial.dialRasWindows(realUsername, password, "ignored");
+				if (err == 0) {
+					pDialState.setText("拨号成功");
+				} else {
+					pDialState.setText(ClickDial.dialRasWindowsErrorStr(err) + "(Code: " + err + ")");
+				}
+			}
 		});
 		
-		JCheckBox pHeart = new JCheckBox("开启心跳模拟");
+		final JCheckBox pHeart = new JCheckBox("开启心跳模拟");
 		pHeart.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-			}			
+			    pHeart.setSelected(false);  // not implemented
+			}
 		});
 		
 		pDialOpr.add(pConnect);
