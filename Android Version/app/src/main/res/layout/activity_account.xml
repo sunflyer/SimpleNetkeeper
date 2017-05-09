@@ -1,0 +1,219 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    tools:context="cn.sunflyer.simplenetkeeper.AccountActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"
+        android:background="#0099cc"
+        android:text="@string/acc_title"
+        android:padding="10dp"
+        />
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:padding="10dp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:id="@+id/acc_tv_top"
+                android:text="拿来卖钱的请自重。"/>
+
+            <EditText
+                android:padding="8dp"
+                android:layout_gravity="center"
+                android:layout_width="280dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/input"
+                android:id="@+id/acc_et_nkname"
+                android:hint="@string/acc_hint_nkname"/>
+
+            <EditText
+                android:padding="8dp"
+                android:layout_gravity="center"
+                android:layout_width="280dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/input_bottom"
+                android:inputType="textPassword"
+                android:id="@+id/acc_et_nkpass"
+                android:hint="@string/acc_hint_nkpass"/>
+
+            <EditText
+                android:padding="8dp"
+                android:layout_gravity="center"
+                android:layout_width="280dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/input"
+                android:id="@+id/acc_et_rip"
+                android:hint="@string/acc_hint_rip"/>
+
+            <EditText
+                android:padding="8dp"
+                android:layout_gravity="center"
+                android:layout_width="280dp"
+                android:layout_height="40dp"
+                android:background="@drawable/input_middle"
+                android:id="@+id/acc_et_rname"
+                android:hint="@string/acc_hint_rname"/>
+
+            <EditText
+                android:padding="8dp"
+                android:layout_gravity="center"
+                android:layout_width="280dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/input_bottom"
+                android:id="@+id/acc_et_rpass"
+                android:inputType="textPassword"
+                android:hint="@string/acc_hint_rpass"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/acc_check_selfradius"
+                android:textColor="#000000"
+                android:id="@+id/acc_cb_selfradius"
+                android:layout_marginRight="5dp"
+                android:checked="false"
+                android:background="@null"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:layout_width="280dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
+                    android:id="@+id/acc_et_nkradius"
+                    android:hint="@string/acc_hint_nkradius"
+                    android:background="@drawable/input"
+                    android:visibility="gone"
+                    />
+
+                <EditText
+                    android:layout_width="280dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
+                    android:id="@+id/acc_et_nkprefix"
+                    android:hint="@string/acc_hint_nkprefix"
+                    android:background="@drawable/input_bottom"
+                    android:visibility="gone"
+                    />
+
+                <Spinner
+                    android:layout_width="280dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/acc_spin_radius"
+                    android:prompt="@string/acc_hint_radius"
+                    android:spinnerMode="dropdown"
+                    android:padding="8dp"
+                    android:background="@drawable/spinner"
+                    android:layout_gravity="center" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/acc_tv_status"
+                android:layout_gravity="center"
+                android:text="@string/acc_tv_status"
+                android:textSize="16dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:textColor="#0099cc"/>
+
+            <CheckBox
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:text="@string/acc_check_save"
+                android:textColor="#000000"
+                android:id="@+id/acc_cb_save"
+                android:layout_marginRight="5dp"
+                android:checked="true"
+                android:background="@null"
+                />
+
+            <Button
+                android:layout_width="290dp"
+                android:layout_height="48dp"
+                android:textSize="16dp"
+                android:id="@+id/acc_but_set"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button"
+                android:layout_gravity="center"
+                android:text="@string/acc_but_config"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="7dp"
+                android:paddingBottom="15dp"
+                android:gravity="center"
+                >
+
+                <Button
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:textSize="16dp"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/acc_but_info"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/button"
+                    android:layout_gravity="center"
+                    android:text="@string/acc_but_info"/>
+
+                <Button
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:textSize="16dp"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/acc_but_internal"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/button"
+                    android:layout_gravity="center"
+                    android:text="@string/acc_but_internal"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:id="@+id/acc_tv_info"
+                android:layout_marginTop="15dp"
+                android:text="@string/acc_tv_help"
+                android:layout_marginBottom="20dp"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,289 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffffff"
+    android:orientation="vertical"
+    tools:context="cn.sunflyer.simplenetkeeper.OntimeDial">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"
+        android:background="#0099cc"
+        android:text="@string/otd_title"
+        android:padding="10dp"
+        />
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|top">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:text="@string/otd_option"
+                    android:textColor="#000000"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="5dp"/>
+
+                <RadioGroup
+                    android:id="@+id/otd_option_g"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="16dp"
+                        android:checked="true"
+                        android:id="@+id/otd_opt_router"
+                        android:text="@string/otd_router"/>
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:textSize="16dp"
+                        android:id="@+id/otd_opt_device"
+                        android:text="@string/otd_device"/>
+
+                </RadioGroup>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="#000000"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/otd_time"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16dp"
+                        android:textColor="#000000"
+                        android:text="@string/otd_startdial"/>
+
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="35dp"
+                        android:id="@+id/otd_in_hour_start"
+                        android:textSize="16dp"
+                        android:inputType="number"
+                        android:text="07"
+                        android:hint="@string/otd_hint_hs"
+                        />
+
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="35dp"
+                        android:id="@+id/otd_in_minute_start"
+                        android:textSize="16dp"
+                        android:text="00"
+                        android:inputType="number"
+                        android:hint="@string/otd_hint_ms"
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16dp"
+                        android:textColor="#000000"
+                        android:text="@string/otd_enddial"/>
+
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="35dp"
+                        android:id="@+id/otd_in_hour_end"
+                        android:textSize="16dp"
+                        android:text="23"
+                        android:inputType="number"
+                        android:hint="@string/otd_hint_he"
+                        />
+
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="35dp"
+                        android:id="@+id/otd_in_minute_end"
+                        android:textSize="16dp"
+                        android:text="30"
+                        android:inputType="number"
+                        android:hint="@string/otd_hint_me"
+                        />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#000000"
+                    android:text="@string/otd_hint_week"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:textSize="16dp"
+                        android:inputType="number"
+                        android:text="从 星期 "/>
+
+                    <EditText
+                        android:layout_width="90dp"
+                        android:layout_height="35dp"
+                        android:id="@+id/otd_in_ws_start"
+                        android:textSize="16dp"
+                        android:text="1"
+                        android:inputType="number"
+                        android:hint="@string/otd_hint_ws"
+                        />
+
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#000000"
+                        android:textSize="16dp"
+                        android:inputType="number"
+                        android:text=" 到 星期 "/>
+
+                    <EditText
+                        android:layout_height="35dp"
+                        android:layout_width="90dp"
+                        android:id="@+id/otd_in_ws_end"
+                        android:textSize="16dp"
+                        android:text="5"
+                        android:hint="@string/otd_hint_we"
+                        />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#000000"
+                    android:text="@string/otd_hint_wifiinfo"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:layout_width="270dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/otd_in_wifiname"
+                        android:background="@drawable/input"
+                        android:hint="@string/otd_hint_wifiname"
+                        android:padding="10dp"
+                        />
+
+                    <EditText
+                        android:layout_width="270dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/otd_in_wifikey"
+                        android:background="@drawable/input_bottom"
+                        android:hint="@string/otd_hint_wifikey"
+                        android:padding="10dp"
+                        android:inputType="textPassword"/>
+                    
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp">
+
+                    <Button
+                        android:layout_width="130dp"
+                        android:layout_height="40dp"
+                        android:textSize="16dp"
+                        android:id="@+id/otd_button_save"
+                        android:background="@drawable/button"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/otd_button"
+                        android:textColor="#FFFFFF"
+                        />
+
+                    <Button
+                        android:layout_width="130dp"
+                        android:layout_height="40dp"
+                        android:textSize="16dp"
+                        android:id="@+id/otd_button_set"
+                        android:background="@drawable/button"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/otd_button_set"
+                        android:textColor="#FFFFFF"
+
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:text="@string/otd_des"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="20dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

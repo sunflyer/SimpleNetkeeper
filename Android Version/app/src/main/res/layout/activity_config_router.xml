@@ -1,0 +1,147 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConfigRouter"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:id="@+id/MainView">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"
+        android:background="#0099cc"
+        android:text="@string/app_name"
+        android:padding="10dp"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center"
+            android:background="@drawable/wifi"
+            android:id="@+id/main_img_wifi"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_view_tips_guide"
+            android:id="@+id/main_view_tip_guide"
+            android:layout_marginTop="10dp"
+            android:textColor="#000000"
+            />
+
+        <Button
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/main_view_but_connect"
+            android:id="@+id/but_connect"
+            android:background="@drawable/button"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp"
+            android:layout_gravity="center"
+            />
+
+        <Button
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/main_view_but_changeinfo"
+            android:id="@+id/but_changeinfo"
+            android:background="@drawable/button"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:gravity="bottom"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_view_tips_connect"
+            android:id="@+id/str_main_tip_connect"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textColor="#000000"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/main_view_but_guide"
+                android:id="@+id/but_guide"
+                android:background="@drawable/button"
+                android:textColor="#FFFFFF"
+                android:textSize="15dp"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:layout_gravity="center"
+                android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:background="@drawable/button"
+                android:textSize="15dp"
+                android:text="@string/main_view_help"
+                android:textColor="#FFFFFF"
+                android:id="@+id/but_about">
+
+            </Button>
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:text="@string/main_view_but_ontime"
+                android:id="@+id/but_ontime"
+                android:background="@drawable/button"
+                android:textColor="#FFFFFF"
+                android:textSize="15dp"
+                android:layout_gravity="center" />
+
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_view_copyright"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:textColor="#000000"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

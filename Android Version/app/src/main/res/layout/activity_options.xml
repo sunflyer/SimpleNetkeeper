@@ -1,0 +1,130 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:context="cn.sunflyer.simplenetkeeper.Options">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"
+        android:background="#0099cc"
+        android:text="@string/opt_title"
+        android:padding="10dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/applogo"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/opt_about_title"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:text="@string/opt_about_title"
+            android:paddingLeft="10dp"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/opt_about_info"
+                android:textColor="#000000"
+                android:padding="10dp"
+                android:text="@string/opt_about_info"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/opt_about_ver"
+                android:textColor="#CD6600"
+                android:padding="10dp"
+                android:text="@string/opt_about_ver"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="10dp">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_list_a"
+                    android:text="@string/opt_update"
+                    android:id="@+id/opt_but_update"
+                    android:drawableLeft="@drawable/arrowtop"
+                    android:drawablePadding="20dp"
+                    android:textColor="#000000"
+                    android:gravity="start|center"
+                    android:padding="15dp"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_list_a"
+                    android:drawableLeft="@drawable/file"
+                    android:drawablePadding="20dp"
+                    android:textColor="#000000"
+                    android:id="@+id/opt_but_report"
+                    android:text="@string/opt_info"
+                    android:gravity="start|center"
+                    android:padding="15dp"/>
+
+                <Button
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_list_a"
+                    android:drawableLeft="@drawable/aperture"
+                    android:drawablePadding="20dp"
+                    android:textColor="#000000"
+                    android:id="@+id/opt_but_blog"
+                    android:text="@string/opt_blog"
+                    android:gravity="start|center"
+                    android:padding="15dp"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_list_a"
+                    android:drawableLeft="@drawable/badge"
+                    android:drawablePadding="20dp"
+                    android:textColor="#000000"
+                    android:id="@+id/opt_but_group"
+                    android:text="@string/opt_group"
+                    android:gravity="start|center"
+                    android:padding="15dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

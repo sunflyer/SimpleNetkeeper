@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.sunflyer.simplenetkeeper.FirstRun"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"
+        android:background="#0099cc"
+        android:text="@string/guide_title"
+        android:padding="10dp"
+
+        />
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/guide_tv_text"
+                android:text="@string/guide_index"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:paddingBottom="20dp"/>
+            <!--android:text="@string/guide_index"-->
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/spinner"
+                android:id="@+id/guide_spin_manu"
+                android:spinnerMode="dropdown"
+                android:padding="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:prompt="@string/guide_promote_manu"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textSize="16dp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button"
+                android:id="@+id/guide_but_start"
+                android:text="@string/guide_start"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
