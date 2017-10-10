@@ -1,14 +1,24 @@
-﻿using SimpleNetkeeper_Win;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using logger = JiangXiCracker.SnkLog;
 
-namespace JiangXiCracker
+/**
+*  CopyFuck 2017 By CrazyChen
+*
+*  湖北电信免心跳双开路由器不限时长@电信亲妈爆炸版登陆协议 —— 来自掌上大学
+*
+*  湖北的奸商们，你们既然已经到了破解不了电信就来破解我的软件来给你们牟利的低不了，真是你爸和你妈XXOO的时候移行错位让你们先天脑发育不足，一点尊重人都不会了？
+*  那就把代码发出来让你们体验一下你爸妈XXOO时的那种高潮快感吧。
+*
+*  代码怎么用？ 大爷只管开源，怎么用都要问，你也配学计算机？
+*  缺代码？看方法名不知道什么意思么？
+*  
+*/
+namespace HubeiCracker
 {
-    class HubeiPortal : AbsXinliPortal
+    class HubeiPortal
     {
 
         private const string AES_KEY_PASSWORD = "pass012345678910",
@@ -89,7 +99,7 @@ namespace JiangXiCracker
                     }
                     catch (Exception)
                     {
-                        logger.log("[SnkHubei] Secret set header failed [" + x + "]");
+                        //logger.log("[SnkHubei] Secret set header failed [" + x + "]");
                     }
                 }
                 if (header.ContainsKey("User-Agent"))
@@ -115,7 +125,7 @@ namespace JiangXiCracker
             }
             catch (Exception e)
             {
-                logger.log("[SnkHubei] [Error] Create Http Failed. " + e.Message );
+                //logger.log("[SnkHubei] [Error] Create Http Failed. " + e.Message );
                 LastErrorMsg = "创建连接失败。";
                 return null;
             }
@@ -137,7 +147,7 @@ namespace JiangXiCracker
             if (hRequest == null)
             {
                 LastErrorMsg = "(5/10) 创建链接失败";
-                logger.log("[SnkHubei] [Error] authenticate create connection failed");
+                //logger.log("[SnkHubei] [Error] authenticate create connection failed");
                 return false;
             }
 
@@ -162,7 +172,7 @@ namespace JiangXiCracker
 
                 if (resp.IndexOf("auth00") >= 0) {
                     LastErrorMsg = "连接成功.";
-                    logger.log("[SnkHubei] [Info] authenticate 连接成功，返回数据[" + resp + "]");
+                    //logger.log("[SnkHubei] [Info] authenticate 连接成功，返回数据[" + resp + "]");
                     return true;
                 }
 
@@ -172,7 +182,7 @@ namespace JiangXiCracker
             catch(Exception e)
             {
                 LastErrorMsg = "(6/10) 由于异常连接失败";
-                logger.log("[SnkHubei] [Error] authenticate " + e.Message);
+                //logger.log("[SnkHubei] [Error] authenticate " + e.Message);
             }
             return false;
         }
@@ -195,7 +205,7 @@ namespace JiangXiCracker
             HttpWebRequest hRequest = createRequest("wf.do?device=Phone%3ALetv+X620%5CSDK%3A23&clientType=android&code=1&version=6.0&clientip=" + LocalIpAddress, null);
             if (hRequest == null) {
                 LastErrorMsg = "(3/10) 创建链接获取参数失败";
-                logger.log("[SnkHubei] [Error] Secret create connection failed");
+                //logger.log("[SnkHubei] [Error] Secret create connection failed");
                 return false;
             }
             try
@@ -210,7 +220,7 @@ namespace JiangXiCracker
                     if (hRespWeb.Cookies.Count == 0)
                     {
                         LastErrorMsg = "(4/10) 获取参数失败";
-                        logger.log("[SnkHubei] [Error] Secret resp [" + this.AccessToken + "]");
+                        //logger.log("[SnkHubei] [Error] Secret resp [" + this.AccessToken + "]");
                         if (this.AccessToken == "nat01") {
                             LastErrorMsg = "(4/10) 电信服务器认为你不在校园网环境\n请更新路由器WAN口IP然后重试或者找电信报修";
                         }
@@ -221,10 +231,10 @@ namespace JiangXiCracker
                     foreach (Cookie x in hRespWeb.Cookies)
                     {
                         this.Cookie.Add(x);
-                        logger.log("[SnkHubei] [Info] Secret " + x.Name + " = " + x.Value);
+                        //logger.log("[SnkHubei] [Info] Secret " + x.Name + " = " + x.Value);
                     }
 
-                    logger.log("[SnkHubei] [Info] Secret Data = " + this.AccessToken);
+                    //logger.log("[SnkHubei] [Info] Secret Data = " + this.AccessToken);
 
                     return true;
                 }
@@ -235,7 +245,7 @@ namespace JiangXiCracker
             catch (Exception e)
             {
                 LastErrorMsg = "(4/10) 由于异常无法获取拨号参数";
-                logger.log("[SnkHubei] [Error] Secret " + e.Message);
+                //logger.log("[SnkHubei] [Error] Secret " + e.Message);
             }
             return false;
         }
@@ -246,7 +256,7 @@ namespace JiangXiCracker
                 //use client
                 this.Host = "58.53.196.165:8080";
                 this.LocalIpAddress = this.RouterIpAddress;
-                logger.log("[SnkHubei] 使用路由器IP地址[" + this.LocalIpAddress + "]");
+                //logger.log("[SnkHubei] 使用路由器IP地址[" + this.LocalIpAddress + "]");
                 return true;
             }
 
@@ -260,7 +270,7 @@ namespace JiangXiCracker
             }
             catch (Exception)
             {
-                logger.log("[SnkHubei] [Error] Create Http Failed.");
+                //logger.log("[SnkHubei] [Error] Create Http Failed.");
                 LastErrorMsg = "(1/10) 获取NAS服务器失败。";
                 return false;
             }
@@ -295,7 +305,7 @@ namespace JiangXiCracker
 
                         this.LocalIpAddress = kv["userip"];
 
-                        logger.log("[SnkHubei] [Info] RedirUrl[" + location + "] IP[" + LocalIpAddress + "] HOST[" + Host + "]");
+                        //logger.log("[SnkHubei] [Info] RedirUrl[" + location + "] IP[" + LocalIpAddress + "] HOST[" + Host + "]");
                         return true;
                     }
                     else
@@ -309,7 +319,7 @@ namespace JiangXiCracker
             catch (Exception e)
             {
                 LastErrorMsg = "(2/10) 找不到登录服务器，请尝试重启路由器";
-                logger.log("[SnkHubei] [Error] Redir " + e.Message);
+                //logger.log("[SnkHubei] [Error] Redir " + e.Message);
             }
             return false;
         }
