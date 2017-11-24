@@ -1,6 +1,4 @@
 <?php
-namespace control;
-
 use function dechex;
 use function str_replace;
 use AES;
