@@ -1,0 +1,16 @@
+Server="hbsm.xinli.com.cn:8080"
+SessionId=System.currentTimeMillis()
+#请求原文： 手机号 $ ICCID $ SessionId
+RequestRaw="手机号$ICCID$SessionId"
+RequestAfterEncrypt = base64(AES_128_ECB_Enc(RequestRaw , "1234567890123456"))
+URL="http://%s/consent?entryptData=%s&userName=%s&sessionid=%s&KeyId=1&sim=%s&type=checkAuto" % (Server , RequestAfterEncrypt , 手机号 , SessionId , ICCID)
+Response = http.request(URL)
+if ( Response.HttpStatus == 200 )
+{
+    jsonResp = json.loads(Response.HttpBody)
+    if ( jsonResp["success"] == 1 )
+    {
+      ResponseRaw = AES_128_ECB_Dec(jsonResp["entryptData"] , "1234567890123456")
+      print ResponseRaw
+    }
+}
